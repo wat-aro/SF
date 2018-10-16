@@ -616,3 +616,13 @@ Proof.
   Case "n = S n'".
     simpl. rewrite -> IHn'. rewrite plus_assoc'. reflexivity.
 Qed.
+
+Theorem mult_assoc : forall n m p : nat,
+  n * (m * p) = (n * m) * p.
+Proof.
+  intros. induction n as [| n'].
+  Case "n = 0".
+    simpl. reflexivity.
+  Case "n = S n'".
+    simpl. rewrite mult_plus_distr_r. rewrite IHn'. reflexivity.
+Qed.
