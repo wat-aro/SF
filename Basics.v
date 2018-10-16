@@ -590,3 +590,19 @@ Theorem mult_1_l : forall n:nat, 1 * n = n.
 Proof.
   intros. simpl. rewrite plus_0. reflexivity.
 Qed.
+
+Theorem all3_spec : forall b c : bool,
+    orb
+      (andb b c)
+      (orb (negb b)
+               (negb c))
+  = true.
+Proof.
+  intros. destruct b.
+  Case "b = true".
+    simpl. destruct c.
+      simpl. reflexivity.
+      simpl. reflexivity.
+  Case "b = false".
+    simpl. reflexivity.
+Qed.
