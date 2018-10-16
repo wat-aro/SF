@@ -640,3 +640,8 @@ Proof.
   reflexivity.
   rewrite plus_comm. reflexivity.
 Qed.
+
+Inductive bit : Type :=
+| O : bit
+| B : bit -> bit
+| S : bit -> bit.
