@@ -554,3 +554,8 @@ Proof.
     reflexivity.
   Case "n = S n'".
     simpl. rewrite <- IHn'. reflexivity.
+
+Theorem zero_nbeq_S : forall n:nat,
+  beq_nat 0 (S n) = false.
+Proof.
+  intros n. simpl. reflexivity.
