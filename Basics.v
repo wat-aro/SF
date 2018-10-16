@@ -579,3 +579,9 @@ Proof.
   Case "p = S p'".
     simpl. rewrite IHp'. reflexivity.
 Qed.
+
+Theorem S_nbeq_0 : forall n:nat,
+  beq_nat (S n) 0 = false.
+Proof.
+  intros. simpl. reflexivity.
+Qed.
