@@ -545,3 +545,12 @@ Proof.
     simpl.
     reflexivity.
 Qed.
+
+Theorem ble_nat_refl : forall n:nat,
+  true = ble_nat n n.
+Proof.
+  intros. induction n as [| n'].
+  Case "n = 0".
+    reflexivity.
+  Case "n = S n'".
+    simpl. rewrite <- IHn'. reflexivity.
