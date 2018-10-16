@@ -529,3 +529,19 @@ Proof.
     simpl. rewrite -> IHm'.
     rewrite -> mult_comm_help. reflexivity.
 Qed.
+
+Theorem evenb_n__oddb_Sn : forall n : nat,
+  evenb n = negb (evenb (S n)).
+Proof.
+  intros n. induction n as [| n'].
+  Case "n = 0".
+    reflexivity.
+  Case "n = S n'".
+    simpl.
+    assert (H: forall b:bool, negb (negb b) = b).
+      intros b. destruct b. reflexivity. reflexivity.
+    rewrite -> IHn'.
+    rewrite -> H.
+    simpl.
+    reflexivity.
+Qed.
