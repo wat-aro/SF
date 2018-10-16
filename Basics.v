@@ -416,21 +416,17 @@ Proof.
 Qed.
 
 Theorem plus_comm : forall n m : nat,
-  n + m = m + n.
+    n + m = m + n.
 Proof.
-  intros. induction m.
+  intros.
+  induction m as [| m'].
   Case "m = 0".
-  simpl.
-  induction n.
-  reflexivity.
-  simpl.
-  rewrite IHn. reflexivity.
-
-  Case "m = 0".
-  simpl.
-  rewrite <- plus_n_Sm.
-  rewrite -> IHm.
-  reflexivity.
+    simpl.
+    induction n.
+    reflexivity.
+    rewrite -> plus_0. reflexivity.
+  Case "m = S m".
+    simpl. rewrite <- plus_n_Sm. rewrite <- IHm'. reflexivity.
 Qed.
 
 Fixpoint double (n:nat) :=
@@ -446,4 +442,90 @@ Proof.
     simpl. reflexivity.
   Case "n = S n'".
   simpl. rewrite -> IHn. rewrite -> plus_n_Sm. reflexivity.
+Qed.
+
+Theorem plus_assoc' : forall n m p : nat,
+  n + (m + p) = (n + m) + p.
+Proof.
+  intros. induction n as [| n']. reflexivity.
+  simpl. rewrite -> IHn'. reflexivity.
+Qed.
+
+Theorem beq_nat_refl : forall n : nat,
+  true = beq_nat n n.
+Proof.
+  intros. induction n as [| n'].
+  Case "n = 0".
+    simpl. reflexivity.
+  Case "n = S n'".
+    simpl. rewrite <- IHn'. reflexivity.
+Qed.
+
+Theorem mult_0_plus' : forall n m : nat,
+  (0 + n) * m = n * m.
+Proof.
+  intros n m.
+  assert (H: 0 + n = n).
+    Case "Proof of assertion". reflexivity.
+  rewrite -> H.
+  reflexivity.
+Qed.
+
+Theorem plus_rearrange : forall n m p q : nat,
+    (n + m) + (p + q) = (m + n) + (p + q).
+Proof.
+  intros n m p q.
+  assert (H: n + m = m + n).
+    Case "Proof of assertion".
+    rewrite -> plus_comm. reflexivity.
+  rewrite -> H. reflexivity.
+Qed.
+
+Theorem plus_swap : forall n m p : nat,
+  n + (m + p) = m + (n + p).
+Proof.
+  intros n m p.
+  rewrite -> plus_assoc'.
+  assert (H: m + (n + p) = m + n + p).
+    Case "Proof of assertion".
+      rewrite <- plus_assoc'. reflexivity.
+  rewrite -> H.
+  assert (H1: n + m = m + n).
+    Case "Proof of assertion".
+      rewrite plus_comm. reflexivity.
+  rewrite -> H1. reflexivity.
+Qed.
+
+Theorem mult_n_1 : forall n : nat,
+    n * 1 = n.
+Proof.
+  intros n. induction n as [| n'].
+  Case "n = 0".
+    reflexivity.
+  Case "n = S n'".
+    simpl. rewrite -> IHn'. reflexivity.
+Qed.
+
+Lemma mult_comm_help : forall m n : nat,
+    n + n * m = n * S m.
+Proof.
+  intros. induction n as [| n'].
+  Case "n = 0".
+    simpl. reflexivity.
+  Case "n = S n'".
+    simpl.
+    rewrite <- IHn'.
+    rewrite -> plus_swap.
+    reflexivity.
+Qed.
+
+Theorem mult_comm : forall m n : nat,
+ m * n = n * m.
+Proof.
+  intros. induction m as [| m'].
+  Case "m = 0".
+    simpl. rewrite -> mult_0_r. reflexivity.
+  Case "m = S m'".
+    simpl. rewrite -> IHm'.
+    rewrite -> mult_comm_help. reflexivity.
 Qed.
