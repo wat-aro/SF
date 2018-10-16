@@ -506,7 +506,7 @@ Proof.
     simpl. rewrite -> IHn'. reflexivity.
 Qed.
 
-Lemma mult_comm_help : forall m n : nat,
+Lemma mult_1 : forall m n : nat,
     n + n * m = n * S m.
 Proof.
   intros. induction n as [| n'].
@@ -527,7 +527,7 @@ Proof.
     simpl. rewrite -> mult_0_r. reflexivity.
   Case "m = S m'".
     simpl. rewrite -> IHm'.
-    rewrite -> mult_comm_help. reflexivity.
+    rewrite -> mult_1. reflexivity.
 Qed.
 
 Theorem evenb_n__oddb_Sn : forall n : nat,
@@ -605,4 +605,14 @@ Proof.
       simpl. reflexivity.
   Case "b = false".
     simpl. reflexivity.
+Qed.
+
+Theorem mult_plus_distr_r : forall n m p : nat,
+  (n + m) * p = (n * p) + (m * p).
+Proof.
+  intros. induction n as [| n'].
+  Case "n = 0".
+    simpl. reflexivity.
+  Case "n = S n'".
+    simpl. rewrite -> IHn'. rewrite plus_assoc'. reflexivity.
 Qed.
