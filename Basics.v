@@ -585,3 +585,8 @@ Theorem S_nbeq_0 : forall n:nat,
 Proof.
   intros. simpl. reflexivity.
 Qed.
+
+Theorem mult_1_l : forall n:nat, 1 * n = n.
+Proof.
+  intros. simpl. rewrite plus_0. reflexivity.
+Qed.
