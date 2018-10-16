@@ -626,3 +626,17 @@ Proof.
   Case "n = S n'".
     simpl. rewrite mult_plus_distr_r. rewrite IHn'. reflexivity.
 Qed.
+
+Theorem plus_swap' : forall n m p : nat,
+  n + (m + p) = m + (n + p).
+Proof.
+  intros.
+  rewrite -> plus_assoc'.
+  assert (H: m + (n + p) = m + n + p).
+    Case "Proof of assertion".
+      rewrite <- plus_assoc'. reflexivity.
+  rewrite H.
+  replace (n + m) with (m + n).
+  reflexivity.
+  rewrite plus_comm. reflexivity.
+Qed.
