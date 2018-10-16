@@ -559,3 +559,13 @@ Theorem zero_nbeq_S : forall n:nat,
   beq_nat 0 (S n) = false.
 Proof.
   intros n. simpl. reflexivity.
+
+Theorem andb_false_r : forall b : bool,
+  andb b false = false.
+Proof.
+  intros b. destruct b.
+  Case "b = true".
+    reflexivity.
+  Case "b = false".
+    reflexivity.
+Qed.
