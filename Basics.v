@@ -727,4 +727,23 @@ Module binnat.
     Case "b = B b".
       simpl. rewrite <- IHb''. rewrite -> bin2nat_inc__S_bin2nat. reflexivity.
   Qed.
+
+  Fixpoint nat2bin (n : nat) : bin :=
+    match n with
+    | O => Z
+    | S n' => inc (nat2bin n')
+    end.
+
+  Theorem nat2nat : forall n : nat,
+      bin2nat (nat2bin n) = n.
+  Proof.
+    intros. induction n as [| n'].
+    Case "n = O".
+      simpl. reflexivity.
+    Case "n = S n'".
+      simpl.
+      replace (S n') with(S (bin2nat (nat2bin n'))).
+        rewrite -> beq_b_inc__n_inc. reflexivity.
+      rewrite -> IHn'. reflexivity.
+  Qed.
 End binnat.
