@@ -554,11 +554,13 @@ Proof.
     reflexivity.
   Case "n = S n'".
     simpl. rewrite <- IHn'. reflexivity.
+Qed.
 
 Theorem zero_nbeq_S : forall n:nat,
   beq_nat 0 (S n) = false.
 Proof.
   intros n. simpl. reflexivity.
+Qed.
 
 Theorem andb_false_r : forall b : bool,
   andb b false = false.
@@ -641,7 +643,88 @@ Proof.
   rewrite plus_comm. reflexivity.
 Qed.
 
-Inductive bit : Type :=
-| O : bit
-| B : bit -> bit
-| S : bit -> bit.
+Theorem de_morgan_a : forall a b : bool,
+    negb (andb a b) = orb (negb a) (negb b).
+Proof.
+  intros. destruct a.
+  Case "a = true".
+    simpl. reflexivity.
+  Case "a = false".
+    simpl. reflexivity.
+Qed.
+
+Theorem de_morgan_o : forall a b : bool,
+    negb (orb a b) = andb (negb a) (negb b).
+Proof.
+  intros. destruct a.
+  Case "a = true".
+    simpl. reflexivity.
+  Case "a = false".
+    simpl. reflexivity.
+Qed.
+
+Module binnat.
+  Inductive bin : Type :=
+  | Z : bin
+  | I : bin -> bin
+  | B : bin -> bin.
+
+  Definition inc (b : bin) : bin :=
+    match b with
+    | Z => I Z
+    | I n => B n
+    | B n => I b
+    end.
+
+  Eval simpl in (inc Z).
+  Eval simpl in (inc (I Z)).
+  Eval simpl in (inc (B Z)).
+
+  Fixpoint bin2nat (b : bin) : nat :=
+    match b with
+    | Z => (O : nat)
+    | I n => S (bin2nat n)
+    | B n => S (S (bin2nat n))
+    end.
+
+  Eval simpl in (bin2nat Z).
+  Eval simpl in (bin2nat (I Z)).
+  Eval simpl in (bin2nat (B Z)).
+  Eval simpl in (bin2nat (I (B Z))).
+  Eval simpl in (bin2nat (B (B Z))).
+
+  Example test_b2n0: (bin2nat Z) = 0.
+  Proof. simpl. reflexivity. Qed.
+  Example test_b2n1: (bin2nat (I Z)) = 1.
+  Proof. simpl. reflexivity. Qed.
+  Example test_b2n2: (bin2nat (B Z)) = 2.
+  Proof. simpl. reflexivity. Qed.
+  Example test_b2n3: (bin2nat (I (B Z))) = 3.
+  Proof. simpl. reflexivity. Qed.
+  Example test_b2n4: (bin2nat (B (B Z))) = 4.
+  Proof. simpl. reflexivity. Qed.
+
+  Theorem bin2nat_inc__S_bin2nat : forall b : bin,
+      bin2nat (inc b) = S (bin2nat b).
+  Proof.
+    induction b as [| b' | b''].
+    Case "b = Z".
+      simpl. reflexivity.
+    Case "b = I b'".
+      simpl. reflexivity.
+    Case "b = B b''".
+      simpl. reflexivity.
+  Qed.
+
+  Theorem beq_b_inc__n_inc : forall b : bin,
+      bin2nat (inc b) = S (bin2nat b).
+  Proof.
+    intros. induction b as [| b' | b''].
+    Case "b = Z".
+      simpl. reflexivity.
+    Case "b = I b'".
+      simpl. rewrite <- IHb'. rewrite -> bin2nat_inc__S_bin2nat. reflexivity.
+    Case "b = B b".
+      simpl. rewrite <- IHb''. rewrite -> bin2nat_inc__S_bin2nat. reflexivity.
+  Qed.
+End binnat.
