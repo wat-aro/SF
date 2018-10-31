@@ -401,3 +401,31 @@ Module NatList.
       rewrite -> IHl1'. reflexivity.
       simpl. rewrite IHl1'. reflexivity.
   Qed.
+
+  Theorem count_member_nonzero : forall (s : bag),
+      ble_nat 1 (count 1 (1 :: s)) = true.
+  Proof.
+    intros s. reflexivity.
+  Qed.
+
+  Theorem ble_n_Sn : forall n,
+      ble_nat n (S n) = true.
+  Proof.
+    intros n. induction n as [| n'].
+    Case "O".
+      simpl. reflexivity.
+    Case "S n".
+      simpl. rewrite -> IHn'. reflexivity.
+  Qed.
+
+  Theorem remove_decreases_count: forall (s : bag),
+      ble_nat (count 0 (remove_one 0 s)) (count 0 s) = true.
+  Proof.
+    intros s. induction s as [| n s'].
+    Case "s = 0".
+      reflexivity.
+    Case "s = n :: s'".
+      simpl. induction n as [| n'].
+      simpl. rewrite -> ble_n_Sn. reflexivity.
+      simpl. rewrite IHs'. reflexivity.
+  Qed.
