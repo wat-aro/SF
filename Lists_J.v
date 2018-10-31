@@ -429,3 +429,13 @@ Module NatList.
       simpl. rewrite -> ble_n_Sn. reflexivity.
       simpl. rewrite IHs'. reflexivity.
   Qed.
+
+  Theorem rev_injective : forall (l1 l2 : natlist),
+      rev l1 = rev l2 -> l1 = l2.
+  Proof.
+    intros l1 l2 H.
+    rewrite <- rev_involutive.
+    rewrite <- H.
+    rewrite -> rev_involutive.
+    reflexivity.
+  Qed.
