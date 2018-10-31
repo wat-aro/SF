@@ -373,3 +373,31 @@ Module NatList.
     Case "l1 = n l1'".
       simpl. rewrite IHl1'. rewrite snoc_append. reflexivity.
   Qed.
+
+  Theorem app_ass4 : forall l1 l2 l3 l4 : natlist,
+      l1 ++ (l2 ++ (l3 ++ l4)) = ((l1 ++ l2) ++ l3) ++ l4.
+  Proof.
+    intros l1 l2 l3 l4. rewrite -> app_ass. rewrite -> app_ass. reflexivity.
+  Qed.
+
+  Theorem snoc_appended : forall (l : natlist) (n : nat),
+      snoc l n = l ++ [n].
+  Proof.
+    intros l n. induction l as [| n' l'].
+    Case "l = nil".
+      reflexivity.
+    Case "l = n' :: l'".
+      simpl. rewrite -> IHl'. reflexivity.
+    Qed.
+
+  Lemma nonzeros_length : forall l1 l2 : natlist,
+      nonzeros (l1 ++ l2) = (nonzeros l1) ++ (nonzeros l2).
+  Proof.
+    intros l1 l2. induction l1 as [| n' l1'].
+    Case "l1 = nil".
+      reflexivity.
+    Case "l1 = n' :: l1'".
+      simpl. induction n' as [| n''].
+      rewrite -> IHl1'. reflexivity.
+      simpl. rewrite IHl1'. reflexivity.
+  Qed.
