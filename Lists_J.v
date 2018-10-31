@@ -250,3 +250,126 @@ Module NatList.
   Proof. reflexivity. Qed.
   Example test_subset2:              subset [1,2,2] [2,1,4,1] = false.
   Proof. reflexivity. Qed.
+
+  Theorem nil_app : forall l : natlist,
+      [] ++ l = l.
+  Proof.
+    reflexivity.
+  Qed.
+
+  Theorem tl_length_pred : forall l : natlist,
+      pred (length l) = length (tail l).
+  Proof.
+    intros l. destruct l as [| n l'].
+    Case "l = nil".
+      reflexivity.
+    Case "l = cons n l'".
+      reflexivity.
+  Qed.
+
+  Theorem app_ass : forall l1 l2 l3 : natlist,
+      (l1 ++ l2) ++ l3 = l1 ++ (l2 ++ l3).
+  Proof.
+    intros l1 l2 l3. induction l1 as [| n l'].
+    Case "l1 = nil".
+      reflexivity.
+    Case "l1 = cons n l1".
+      simpl. rewrite -> IHl'. reflexivity.
+  Qed.
+
+  Theorem app_length : forall l1 l2 : natlist,
+      length (l1 ++ l2) = (length l1) + (length l2).
+  Proof.
+    intros l1 l2. induction l1 as [| n l'].
+    Case "l = nil".
+      reflexivity.
+    Case "l = cons n l'".
+      simpl.  rewrite -> IHl'. reflexivity.
+  Qed.
+
+  Fixpoint snoc (l :natlist) (v : nat) : natlist :=
+    match l with
+    | nil => [v]
+    | h :: t => cons h (snoc t v)
+    end.
+
+  Fixpoint rev (l : natlist) : natlist :=
+    match l with
+    | nil => nil
+    | h :: t => snoc (rev t) h
+    end.
+
+  Example test_rev1:            rev [1,2,3] = [3,2,1].
+  Proof. reflexivity.  Qed.
+  Example test_rev2:            rev nil = nil.
+  Proof. reflexivity.  Qed.
+
+  Theorem length_snoc : forall n : nat, forall l : natlist,
+        length (snoc l n) = S (length l).
+  Proof.
+    intros n l. induction l as [| n' l'].
+    Case "l = nil".
+      reflexivity.
+    Case "l = n' l'".
+      simpl. rewrite -> IHl'. reflexivity.
+  Qed.
+
+  Theorem rev_length_firsttry : forall l : natlist,
+      length (rev l) = length l.
+  Proof.
+    intros l. induction l as [| n l'].
+    Case "l = nil".
+      reflexivity.
+    Case "l = n l'".
+      simpl. rewrite -> length_snoc. rewrite <- IHl'. reflexivity.
+  Qed.
+
+  Theorem app_nil_end : forall l : natlist,
+      l ++ [] = l.
+  Proof.
+    intros l. induction l as [| n l'].
+    Case "l = nil".
+      reflexivity.
+    Case "l = n l'".
+      simpl. rewrite -> IHl'. reflexivity.
+  Qed.
+
+  Theorem rev_snoc : forall l : natlist, forall n : nat,
+      rev (snoc l n) = n :: (rev l).
+  Proof.
+    intros. induction l as [| n' l'].
+    Case "l = nil".
+      reflexivity.
+    Case "l = n' l'".
+      simpl. rewrite -> IHl'. simpl. reflexivity.
+  Qed.
+
+  Theorem rev_involutive : forall l : natlist,
+      rev (rev l) = l.
+  Proof.
+    intros l. induction l as [| n l'].
+    Case "l = nil".
+      reflexivity.
+    Case "l = n l'".
+      simpl. rewrite -> rev_snoc. rewrite -> IHl'. reflexivity.
+  Qed.
+
+  Theorem snoc_append : forall l1 l2 : natlist, forall n : nat,
+      snoc (l1 ++ l2) n = l1 ++ snoc l2 n.
+  Proof.
+    intros l1 l2 n. induction l1 as [| n' l1'].
+    Case "l1 = nil".
+      reflexivity.
+    Case "l1 = n' ++ l1'".
+      simpl. rewrite IHl1'. reflexivity.
+  Qed.
+
+  Theorem distr_rev : forall l1 l2 : natlist,
+      rev (l1 ++ l2) = (rev l2) ++ (rev l1).
+  Proof.
+    intros l1 l2. induction l1 as [| n l1'].
+    Case "l1 = nil".
+      simpl. rewrite -> app_nil_end. reflexivity.
+    Case "l1 = n l1'".
+      simpl. rewrite IHl1'. rewrite snoc_append. reflexivity.
+  Qed.
