@@ -498,3 +498,38 @@ Module NatList.
     Case "l = n :: l'".
     reflexivity.
   Qed.
+
+  Fixpoint beq_natlist (l1 l2 : natlist) : bool :=
+    match l1 with
+    | nil => match l2 with
+             | nil => true
+             | h :: t => false
+             end
+    | h1 :: t1 => match l2 with
+                  | nil => false
+                  | h2 :: t2 => match beq_nat h1 h2 with
+                                | true => beq_natlist t1 t2
+                                | false => false
+                                end
+                  end
+    end.
+
+  Example test_beq_natlist1 :   (beq_natlist nil nil = true).
+  Proof. simpl. reflexivity. Qed.
+  Example test_beq_natlist2 :   beq_natlist [1,2,3] [1,2,3] = true.
+  Proof. simpl. reflexivity. Qed.
+  Example test_beq_natlist3 :   beq_natlist [1,2,3] [1,2,4] = false.
+  Proof. simpl. reflexivity. Qed.
+
+  Theorem beq_natlist_refl : forall l:natlist,
+      true = beq_natlist l l.
+  Proof.
+    intros l. induction l as [|n l'].
+    Case "l = nil".
+      reflexivity.
+    Case "l = n :: l'".
+      simpl. replace (beq_nat n n) with (true). rewrite <- IHl'. reflexivity.
+      induction n as [| n'].
+      reflexivity.
+      simpl. rewrite <- IHn'. reflexivity.
+  Qed.
