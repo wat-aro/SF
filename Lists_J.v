@@ -33,7 +33,6 @@ Module NatList.
     | (x, y) => (y, x)
     end.
 
-
   Theorem surjective_pairing' : forall (n m : nat),
       (n, m) = (fst (n, m), snd (n, m)).
   Proof.
@@ -462,30 +461,40 @@ Module NatList.
                  end
     end.
 
-Example test_index1 : index 0 [4,5,6,7] = Some 4.
-Proof. reflexivity. Qed.
-Example test_index2 :    index 3 [4,5,6,7]  = Some 7.
-Proof. reflexivity.  Qed.
-Example test_index3 :    index 10 [4,5,6,7] = None.
-Proof. reflexivity.  Qed.
+  Example test_index1 : index 0 [4,5,6,7] = Some 4.
+  Proof. reflexivity. Qed.
+  Example test_index2 :    index 3 [4,5,6,7]  = Some 7.
+  Proof. reflexivity.  Qed.
+  Example test_index3 :    index 10 [4,5,6,7] = None.
+  Proof. reflexivity.  Qed.
 
-Definition option_elim (o : natoption) (d : nat) : nat :=
-  match o with
-  | Some n' => n'
-  | None => d
-  end.
+  Definition option_elim (o : natoption) (d : nat) : nat :=
+    match o with
+    | Some n' => n'
+    | None => d
+    end.
 
-Definition hd_opt (l : natlist) : natoption :=
-  match l with
-  | nil => None
-  | h :: t => Some h
-  end.
+  Definition hd_opt (l : natlist) : natoption :=
+    match l with
+    | nil => None
+    | h :: t => Some h
+    end.
 
-Example test_hd_opt1 : hd_opt [] = None.
-Proof. reflexivity. Qed.
+  Example test_hd_opt1 : hd_opt [] = None.
+  Proof. reflexivity. Qed.
 
-Example test_hd_opt2 : hd_opt [1] = Some 1.
-Proof. reflexivity. Qed.
+  Example test_hd_opt2 : hd_opt [1] = Some 1.
+  Proof. reflexivity. Qed.
 
-Example test_hd_opt3 : hd_opt [5,6] = Some 5.
-Proof. reflexivity. Qed.
+  Example test_hd_opt3 : hd_opt [5,6] = Some 5.
+  Proof. reflexivity. Qed.
+
+  Theorem option_elim_hd : forall (l:natlist) (default:nat),
+      hd default l = option_elim (hd_opt l) default.
+  Proof.
+    intros l default. induction l as [| n l'].
+    Case "l = nil".
+    reflexivity.
+    Case "l = n :: l'".
+    reflexivity.
+  Qed.
