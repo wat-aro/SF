@@ -570,3 +570,23 @@ Module NatList.
     intros eq1 eq2.
     apply eq1. apply eq2.
   Qed.
+
+  Theorem silly3_firsttry : forall (n : nat),
+      true = beq_nat n 5  ->
+      beq_nat (S (S n)) 7 = true.
+  Proof.
+    intros n H.
+    symmetry.
+    simpl.
+    apply H.
+  Qed.
+
+  Theorem rev_exercise1 : forall (l l' : natlist),
+      l = rev l' ->
+      l' = rev l.
+  Proof.
+    intros l l' H.
+    rewrite -> H.
+    symmetry.
+    apply rev_involutive.
+  Qed.
