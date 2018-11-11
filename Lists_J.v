@@ -647,3 +647,5 @@ Module Dictionary.
     simpl. rewrite H. reflexivity.
   Qed.
 End Dictionary.
+
+Definition beq_nat_sym := NatList.beq_nat_sym.
