@@ -598,5 +598,19 @@ Module NatList.
     Case "l1 = nil".
       reflexivity.
     Case "l1 = n :: l1'".
-      simpl. intros l2 l3. rewrite <- IHl1'. reflexivity.
+      simpl. intros l2 l3. rewrite IHl1'. reflexivity.
+  Qed.
+
+  Theorem beq_nat_sym : forall (n m : nat),
+      beq_nat n m = beq_nat m n.
+  Proof.
+    intros n. induction n as [| n'].
+    Case "n = 0".
+      destruct m.
+        reflexivity.
+        reflexivity.
+    Case "n = S n'".
+      destruct m.
+        reflexivity.
+        apply IHn'.
   Qed.
