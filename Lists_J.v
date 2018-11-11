@@ -615,3 +615,27 @@ Module NatList.
         apply IHn'.
   Qed.
 End NatList.
+
+Module Dictionary.
+  Inductive dictionary : Type :=
+  | empty : dictionary
+  | record : nat -> nat -> dictionary -> dictionary.
+
+  Definition insert (key value : nat) (d : dictionary) : dictionary :=
+    record key value d.
+
+  Fixpoint find (key : nat) (d : dictionary) : option nat :=
+    match d with
+    | empty => None
+    | record k v d' => if (beq_nat key k) then (Some v) else (find key d')
+    end.
+
+  Theorem dictionary_invariant1 : forall (d : dictionary) (k v: nat),
+      (find k (insert k v d)) = Some v.
+  Proof.
+    intros.
+    simpl.
+    replace (beq_nat k k) with true.
+    reflexivity.
+    apply beq_nat_refl.
+  Qed.
