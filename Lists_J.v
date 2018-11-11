@@ -590,3 +590,13 @@ Module NatList.
     symmetry.
     apply rev_involutive.
   Qed.
+
+  Theorem app_ass' : forall l1 l2 l3 : natlist,
+      (l1 ++ l2) ++ l3 = l1 ++ (l2 ++ l3).
+  Proof.
+    intros l1. induction l1 as [ | n l1'].
+    Case "l1 = nil".
+      reflexivity.
+    Case "l1 = n :: l1'".
+      simpl. intros l2 l3. rewrite <- IHl1'. reflexivity.
+  Qed.
