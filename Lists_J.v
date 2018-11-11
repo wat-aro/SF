@@ -646,3 +646,4 @@ Module Dictionary.
     intros.
     simpl. rewrite H. reflexivity.
   Qed.
+End Dictionary.
