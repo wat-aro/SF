@@ -360,3 +360,21 @@ Definition option_map {X Y : Type} (f : X -> Y) (xo : option X) : option Y :=
   | None => None
   | Some x => Some (f x)
   end.
+
+Fixpoint fold {X Y : Type} (f : X -> Y -> Y) (l : list X) (b : Y) : Y :=
+  match l with
+  | [] => b
+  | h :: t => f h (fold f t b)
+  end.
+
+Check (fold plus).
+Eval simpl in (fold plus [1,2,3,4] 0).
+
+Example fold_example1 : fold mult [1,2,3,4] 1 = 24.
+Proof. reflexivity. Qed.
+
+Example fold_example2 : fold andb [true,true,false,true] true = false.
+Proof. reflexivity. Qed.
+
+Example fold_example3 : fold (@app nat) [[1],[],[2,3],[4]] [] = [1,2,3,4].
+Proof. reflexivity. Qed.
