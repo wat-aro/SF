@@ -206,3 +206,46 @@ Example test_hd_opt1 :  hd_opt [1,2] = Some 1.
 Proof. reflexivity.  Qed.
 Example test_hd_opt2 :   hd_opt  [[1],[2]]  = Some [1].
 Proof. reflexivity.  Qed.
+
+Definition doit3times {X : Type} (f : X -> X) (n : X) : X :=
+  f (f (f n)).
+
+Check @doit3times.
+
+Example test_doit3times: doit3times minustwo 9 = 3.
+Proof. reflexivity.  Qed.
+
+Example test_doit3times': doit3times negb true = false.
+Proof. reflexivity.  Qed.
+
+Check plus.
+
+Definition plus3 := plus 3.
+Check plus3.
+
+Example test_plus3 :    plus3 4 = 7.
+Proof. reflexivity.  Qed.
+Example test_plus3' :   doit3times plus3 0 = 9.
+Proof. reflexivity.  Qed.
+Example test_plus3'' :  doit3times (plus 3) 0 = 9.
+Proof. reflexivity.  Qed.
+
+Definition prod_curry {X Y Z : Type} (f : X * Y -> Z) (x : X) (y : Y) : Z :=
+  f (x, y).
+
+Definition prod_uncurry {X Y Z : Type}
+           (f : X -> Y -> Z) (p : X * Y) : Z := f (fst p) (snd p).
+
+Check @prod_curry.
+Check @prod_uncurry.
+
+Theorem uncurry_curry : forall (X Y Z : Type) (f : X -> Y -> Z) x y,
+  prod_curry (prod_uncurry f) x y = f x y.
+Proof.
+  intros. reflexivity. Qed.
+
+Theorem curry_uncurry : forall (X Y Z : Type)
+                               (f : (X * Y) -> Z) (p : X * Y),
+  prod_uncurry (prod_curry f) p = f p.
+Proof.
+  intros. destruct p. reflexivity. Qed.
