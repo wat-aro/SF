@@ -278,3 +278,24 @@ Example test_countoddmembers'2:   countoddmembers' [0,2,4] = 0.
 Proof. reflexivity.  Qed.
 Example test_countoddmembers'3:   countoddmembers' nil = 0.
 Proof. reflexivity.  Qed.
+
+Example test_anon_fun':
+  doit3times (fun n => n * n) 2 = 256.
+Proof. reflexivity.  Qed.
+
+Example test_filter2':
+    filter (fun l => beq_nat (length l) 1)
+           [ [1, 2], [3], [4], [5,6,7], [], [8] ]
+  = [ [3], [4], [8] ].
+Proof. reflexivity.  Qed.
+
+Definition filter_even_gt7 (l : list nat) : list nat :=
+  filter (fun n => andb (evenb n) (ble_nat 7 n)) l.
+
+Example test_filter_even_gt7_1 :
+  filter_even_gt7 [1,2,6,9,10,3,12,8] = [10,12,8].
+Proof. reflexivity. Qed.
+
+Example test_filter_even_gt7_2 :
+  filter_even_gt7 [5,2,6,19,129] = [].
+Proof. reflexivity. Qed.
