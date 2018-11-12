@@ -136,3 +136,44 @@ Proof.
     reflexivity.
   Case "l1 = v' :: l1'".
     simpl. rewrite -> IHl1'. reflexivity. Qed.
+
+Inductive prod (X Y : Type) : Type :=
+  pair : X -> Y -> prod X Y.
+
+Arguments pair [X] [Y].
+
+Notation "( x , y )" := (pair x y).
+
+Notation "X * Y" := (prod X Y) : type_scope.
+
+Definition fst {X Y : Type} (p : X * Y) : X :=
+  match p with (x, y) => x end.
+
+Definition snd {X Y : Type} (p : X * Y) : Y :=
+  match p with (x, y) => y end.
+
+Fixpoint combine {X Y : Type} (lx : list X) (ly : list Y) : list (X * Y) :=
+  match (lx, ly) with
+  | ([], _) => []
+  | (_, []) => []
+  | (x :: tx, y :: ty) => (x, y) :: (combine tx ty)
+  end.
+
+Fixpoint combine' {X Y : Type} (lx : list X) (ly : list Y) : list (X * Y) :=
+  match lx, ly with
+  | [], _ => []
+  | _, [] => []
+  | x :: tx, y :: ty => (x, y) :: (combine tx ty)
+  end.
+
+Fixpoint split {X Y : Type} (ps : list (X * Y)) : (list X * list Y) :=
+  match ps with
+  | [] => ([], [])
+  | (x, y) :: ps' => match split ps' with
+                   | (xs, ys) => (x :: xs, y :: ys)
+                   end
+  end.
+
+Example test_split:
+  split [(1,false),(2,false)] = ([1,2],[false,false]).
+Proof. reflexivity.  Qed.
