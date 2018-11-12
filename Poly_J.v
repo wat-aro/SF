@@ -299,3 +299,11 @@ Proof. reflexivity. Qed.
 Example test_filter_even_gt7_2 :
   filter_even_gt7 [5,2,6,19,129] = [].
 Proof. reflexivity. Qed.
+
+Definition partition {X : Type} (test : X -> bool) (l : list X) : list X * list X :=
+  (filter test l, filter (fun x => negb (test x)) l).
+
+Example test_partition1: partition oddb [1,2,3,4,5] = ([1,3,5], [2,4]).
+Proof. reflexivity. Qed.
+Example test_partition2: partition (fun x => false) [5,9,0] = ([], [5,9,0]).
+Proof. reflexivity. Qed.
