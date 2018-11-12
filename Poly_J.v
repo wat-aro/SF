@@ -439,3 +439,22 @@ Proof.
   unfold override.
   rewrite -> H'.
   apply H. Qed.
+
+Theorem eq_add_S : forall (n m : nat),
+     S n = S m ->
+     n = m.
+Proof.
+  intros n m eq. inversion eq. reflexivity. Qed.
+
+Theorem silly5 : forall (n m o : nat),
+    [n,m] = [o,o] ->
+    [n] = [m].
+Proof.
+  intros n m o eq. inversion eq. reflexivity. Qed.
+
+Example sillyex1 : forall (X : Type) (x y z : X) (l j : list X),
+     x :: y :: l = z :: j ->
+     y :: l = x :: j ->
+     x = y.
+Proof.
+  intros X x y z l j eq0 eq1. inversion eq1. reflexivity. Qed.
