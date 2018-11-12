@@ -342,3 +342,21 @@ Proof.
     reflexivity.
   Case "n = x :: l'".
     simpl. rewrite <- IHl'. apply snoc_map. Qed.
+
+Fixpoint flat_map {X Y:Type} (f:X -> list Y) (l:list X)
+                   : (list Y) :=
+  match l with
+  | [] => []
+  | h :: ts => (f h) ++ (flat_map f ts)
+  end.
+
+Example test_flat_map1:
+  flat_map (fun n => [n,n,n]) [1,5,4]
+  = [1, 1, 1, 5, 5, 5, 4, 4, 4].
+Proof. reflexivity.  Qed.
+
+Definition option_map {X Y : Type} (f : X -> Y) (xo : option X) : option Y :=
+  match xo with
+  | None => None
+  | Some x => Some (f x)
+  end.
