@@ -411,3 +411,31 @@ Theorem override_example : forall (b:bool),
   (override (constfun b) 3 true) 2 = b.
 (* すべての真偽値 b について、 3 を受け取った場合に true を返し、 そうでなければ b を返す関数を 2 に適用した結果は b である  *)
 Proof. reflexivity. Qed.
+
+
+Theorem unfold_example_bad : forall m n,
+  3 + n = m ->
+  plus3 n + 1 = m + 1.
+Proof.
+  intros m n H.
+  unfold plus3.
+  rewrite -> H.
+  reflexivity. Qed.
+
+Theorem override_eq : forall {X:Type} x k (f:nat->X),
+  (override f k x) k = x.
+Proof.
+  intros X x k f.
+  unfold override.
+  rewrite <- beq_nat_refl.
+  reflexivity.  Qed.
+
+Theorem override_neq : forall {X:Type} x1 x2 k1 k2 (f : nat->X),
+  f k1 = x1 ->
+  beq_nat k2 k1 = false ->
+  (override f k2 x2) k1 = x1.
+Proof.
+  intros X x1 x2 k1 k2 f H H'.
+  unfold override.
+  rewrite -> H'.
+  apply H. Qed.
