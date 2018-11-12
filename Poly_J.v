@@ -307,3 +307,38 @@ Example test_partition1: partition oddb [1,2,3,4,5] = ([1,3,5], [2,4]).
 Proof. reflexivity. Qed.
 Example test_partition2: partition (fun x => false) [5,9,0] = ([], [5,9,0]).
 Proof. reflexivity. Qed.
+
+Fixpoint map {X Y : Type} (f : X -> Y) (l : list X) : list Y :=
+  match l with
+  | [] => []
+  | h :: t => f h :: (map f t)
+  end.
+
+Example test_map1: map (plus 3) [2,0,2] = [5,3,5].
+Proof. reflexivity.  Qed.
+
+Example test_map2: map oddb [2,1,2,5] = [false,true,false,true].
+Proof. reflexivity.  Qed.
+
+Example test_map3:
+    map (fun n => [evenb n,oddb n]) [2,1,2,5]
+  = [[true,false],[false,true],[true,false],[false,true]].
+Proof. reflexivity.  Qed.
+
+Theorem snoc_map : forall (X Y : Type) (f : X -> Y) (l : list X) (x : X),
+    map f (snoc l x) = snoc (map f l) (f x).
+Proof.
+  intros. induction l as [| x' l'].
+  Case "l = []".
+    reflexivity.
+  Case "l = x' :: l'".
+    simpl. rewrite -> IHl'. reflexivity. Qed.
+
+Theorem map_rev : forall (X Y : Type) (f : X -> Y) (l : list X),
+    map f (rev l) = rev (map f l).
+Proof.
+  intros. induction l as [| x l'].
+  Case "n = []".
+    reflexivity.
+  Case "n = x :: l'".
+    simpl. rewrite <- IHl'. apply snoc_map. Qed.
