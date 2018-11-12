@@ -177,3 +177,32 @@ Fixpoint split {X Y : Type} (ps : list (X * Y)) : (list X * list Y) :=
 Example test_split:
   split [(1,false),(2,false)] = ([1,2],[false,false]).
 Proof. reflexivity.  Qed.
+
+Inductive option (X : Type) : Type :=
+| Some : X -> option X
+| None : option X.
+
+Arguments Some [X].
+Arguments None [X].
+
+Fixpoint index {X : Type} (n : nat) (l : list X) : option X :=
+  match l with
+  | [] => None
+  | a :: l' => if beq_nat n O then Some a else index (pred n) l'
+  end.
+
+Example test_index1 :    index 0 [4,5,6,7]  = Some 4.
+Proof. reflexivity.  Qed.
+Example test_index2 :    index  1 [[1],[2]]  = Some [2].
+Proof. reflexivity.  Qed.
+Example test_index3 :    index  2 [true]  = None.
+Proof. reflexivity.  Qed.
+
+Definition hd_opt {X : Type} (l : list X) : option X := index 0 l.
+
+Check @hd_opt.
+
+Example test_hd_opt1 :  hd_opt [1,2] = Some 1.
+Proof. reflexivity.  Qed.
+Example test_hd_opt2 :   hd_opt  [[1],[2]]  = Some [1].
+Proof. reflexivity.  Qed.
