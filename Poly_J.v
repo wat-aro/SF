@@ -476,4 +476,36 @@ Example sillyex2 : forall (X : Type) (x y z : X) (l j : list X),
     y :: l = z :: j ->
     x = z.
 Proof.
-  intros X x y z l j contra0 contra1. inversion contra0. Qed.
+  intros X x y z l j eq0 eq1. inversion eq0. Qed.
+
+Lemma eq_remove_S : forall n m,
+    n = m -> S n = S m.
+Proof. intros n m eq. rewrite -> eq. reflexivity. Qed.
+
+Theorem beq_nat_eq : forall n m,
+    true = beq_nat n m -> n = m.
+Proof.
+  intros n. induction n as [| n'].
+  Case "n = 0".
+    intros m. destruct m as [| m'].
+    SCase "m = 0". reflexivity.
+    SCase "m = S m'". simpl. intros contra. inversion contra.
+  Case "n = n'".
+    intros m. destruct m as [| m'].
+    SCase "m = 0". simpl. intros contra. inversion contra.
+    SCase "m = S m'". simpl. intros H.
+      apply eq_remove_S. apply IHn'. apply H. Qed.
+
+Theorem beq_nat_eq' : forall m n,
+  beq_nat n m = true -> n = m.
+Proof.
+  intros m. induction m as [| m'].
+  Case "m = 0".
+    intros n. induction n as [| n'].
+    SCase "n = 0". reflexivity.
+    SCase "n = S n'". simpl. intros contra. inversion contra.
+  Case "m = S m'".
+    intros n. induction n as [| n'].
+    SCase "n = 0". simpl. intros contra. inversion contra.
+    SCase "n = S n'". simpl. intros eq.
+      apply eq_remove_S. apply IHm'. apply eq. Qed.
