@@ -378,3 +378,36 @@ Proof. reflexivity. Qed.
 
 Example fold_example3 : fold (@app nat) [[1],[],[2,3],[4]] [] = [1,2,3,4].
 Proof. reflexivity. Qed.
+
+Definition constfun {X : Type} (x : X) : nat -> X :=
+  fun (k : nat) => x.
+
+Definition ftrue := constfun true.
+
+Example constfun_example1 : ftrue 0 = true.
+Proof. reflexivity. Qed.
+
+Example constfun_example2 : (constfun 5) 99 = 5.
+Proof. reflexivity. Qed.
+
+Definition override {X : Type} (f : nat -> X) (k : nat) (x : X) : nat -> X :=
+  fun (k' : nat) => if beq_nat k k' then x else f k'.
+
+Definition fmostlytrue := override (override ftrue 1 false) 3 false.
+
+Example override_example1 : fmostlytrue 0 = true.
+Proof. reflexivity. Qed.
+
+Example override_example2 : fmostlytrue 1 = false.
+Proof. reflexivity. Qed.
+
+Example override_example3 : fmostlytrue 2 = true.
+Proof. reflexivity. Qed.
+
+Example override_example4 : fmostlytrue 3 = false.
+Proof. reflexivity. Qed.
+
+Theorem override_example : forall (b:bool),
+  (override (constfun b) 3 true) 2 = b.
+(* すべての真偽値 b について、 3 を受け取った場合に true を返し、 そうでなければ b を返す関数を 2 に適用した結果は b である  *)
+Proof. reflexivity. Qed.
