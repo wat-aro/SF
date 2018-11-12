@@ -458,3 +458,22 @@ Example sillyex1 : forall (X : Type) (x y z : X) (l j : list X),
      x = y.
 Proof.
   intros X x y z l j eq0 eq1. inversion eq1. reflexivity. Qed.
+
+Theorem silly6 : forall (n : nat),
+    S n = O ->
+    2 + 2 = 5.
+Proof.
+  intros n contra. inversion contra. Qed.
+
+Theorem silly7 : forall (n m : nat),
+    false = true ->
+    [n] = [m].
+Proof.
+  intros n m contra. inversion contra. Qed.
+
+Example sillyex2 : forall (X : Type) (x y z : X) (l j : list X),
+    x :: y :: l = [] ->
+    y :: l = z :: j ->
+    x = z.
+Proof.
+  intros X x y z l j contra0 contra1. inversion contra0. Qed.
