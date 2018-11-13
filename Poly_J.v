@@ -728,3 +728,17 @@ Proof.
       apply beq_nat_eq in Heqeqk. rewrite -> Heqeqk in eq1. rewrite <- eq1. reflexivity.
     Case "beq_nat k1 k3 = false".
       reflexivity. Qed.
+
+Definition fold_length {X : Type} (l : list X) : nat :=
+  fold (fun _ n => S n) l 0.
+
+Example test_fold_length1 : fold_length [4,7,0] = 3.
+Proof. reflexivity. Qed.
+
+Theorem fold_length_correct : forall X (l : list X),
+  fold_length l = length l.
+Proof.
+  intros X l. induction l as [| x l'].
+  Case "l = []". reflexivity.
+  Case "l = x ::l'".
+    simpl. rewrite <- IHl'. unfold fold_length. simpl. reflexivity. Qed.
