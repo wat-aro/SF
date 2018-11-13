@@ -509,3 +509,25 @@ Proof.
     SCase "n = 0". simpl. intros contra. inversion contra.
     SCase "n = S n'". simpl. intros eq.
       apply eq_remove_S. apply IHm'. apply eq. Qed.
+
+Theorem length_snoc' : forall (X : Type) (v : X)
+                              (l : list X) (n : nat),
+     length l = n ->
+     length (snoc l v) = S n.
+Proof.
+  intros X v l. induction l as [| v' l'].
+  Case "l = []".
+    intros n eq. rewrite <- eq. reflexivity.
+  Case "l = v' :: l'". intros n eq. simpl. destruct n as [| n'].
+    SCase "n = 0". inversion eq.
+    SCase "n = S n'".
+      apply eq_remove_S. apply IHl'. inversion eq. reflexivity. Qed.
+
+Theorem beq_nat_0_l : forall n,
+  true = beq_nat 0 n -> 0 = n.
+Proof.
+  intros n. induction n as [| n'].
+  Case "n = 0".
+    reflexivity.
+  Case "n = S n'".
+    intros contra. inversion contra. Qed.
