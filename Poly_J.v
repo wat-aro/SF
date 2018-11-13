@@ -627,3 +627,36 @@ Proof.
       rewrite -> IHl'.
       reflexivity.
       reflexivity. Qed.
+
+Definition sillyfun1 (n : nat) : bool :=
+  if beq_nat n 3 then true
+  else if beq_nat n 5 then true
+  else false.
+
+Theorem sillyfun1_odd_FAILED : forall (n : nat),
+    sillyfun1 n = true ->
+    oddb n = true.
+Proof.
+  intros n eq. unfold sillyfun1 in eq.
+  remember (beq_nat n 3) as e3.
+  destruct e3.
+    Case "e3 = true". apply beq_nat_eq in Heqe3.
+      rewrite -> Heqe3. reflexivity.
+    Case "e3 = false".
+      remember (beq_nat n 5) as e5.
+      destruct e5.
+        SCase "beq_nat n 5 = true". apply beq_nat_eq in Heqe5.
+          rewrite -> Heqe5. reflexivity.
+        SCase "beq_nat n 5 = false". inversion eq. Qed.
+
+Theorem override_same : forall {X:Type} x1 k1 k2 (f : nat->X),
+  f k1 = x1 ->
+  (override f k1 x1) k2 = f k2.
+Proof.
+  intros X x1 k1 k2 f H. unfold override.
+  remember (beq_nat k1 k2) as eqk.
+  destruct eqk.
+    Case "beq_nat k1 k2 = true".
+      apply beq_nat_eq in Heqeqk.
+      rewrite <- Heqeqk. symmetry. apply H.
+    Case "beq_nat k1 k2 = false". reflexivity. Qed.
