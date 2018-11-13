@@ -587,3 +587,26 @@ Proof.
       apply IHn' in H1.
       apply eq_remove_S in H1.
       apply H1. Qed.
+
+Definition sillyfun (n : nat) : bool :=
+  if beq_nat n 3 then false
+  else if beq_nat n 5 then false
+  else false.
+
+Theorem sillyfun_false : forall (n : nat),
+    sillyfun n = false.
+Proof.
+  intros n. unfold sillyfun.
+  destruct (beq_nat n 3).
+    Case "beq_nat n 3 = true". reflexivity.
+    Case "beq_nat n 3 = false". destruct (beq_nat n 5).
+      SCase "beq_nat n 5 = true". reflexivity.
+      SCase "beq_nat n 5 = false". reflexivity. Qed.
+
+Theorem override_shadow : forall {X:Type} x1 x2 k1 k2 (f : nat->X),
+  (override (override f k1 x2) k1 x1) k2 = (override f k1 x1) k2.
+Proof.
+  intros X x x2 k1 k2 f. unfold override.
+  destruct (beq_nat k1 k2).
+  Case "beq_nat k1 k2 = true". reflexivity.
+  Case "beq_nat k1 k2 = false". reflexivity. Qed.
