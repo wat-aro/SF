@@ -707,3 +707,24 @@ Example trans_eq_exercise : forall (n m o p : nat),
 Proof.
   intros n m o p eq1 eq2.
   apply trans_eq with m. apply eq2. apply eq1. Qed.
+
+Theorem beq_nat_trans : forall n m p,
+  true = beq_nat n m ->
+  true = beq_nat m p ->
+  true = beq_nat n p.
+Proof.
+  intros n m p eq1 eq2.
+  apply beq_nat_eq in eq1. apply beq_nat_eq in eq2.
+  rewrite -> (trans_eq n m p eq1 eq2).
+  apply beq_nat_refl. Qed.
+
+Theorem override_permute : forall {X : Type} x1 x2 k1 k2 k3 (f : nat -> X),
+    false = beq_nat k2 k1 ->
+    (override (override f k2 x2) k1 x1) k3 = (override (override f k1 x1) k2 x2) k3.
+Proof.
+  intros X x1 x2 k1 k2 k3 f eq1.
+  unfold override. remember (beq_nat k1 k3) as eqk. destruct eqk.
+    Case "beq_nat k1 k3 = true".
+      apply beq_nat_eq in Heqeqk. rewrite -> Heqeqk in eq1. rewrite <- eq1. reflexivity.
+    Case "beq_nat k1 k3 = false".
+      reflexivity. Qed.
