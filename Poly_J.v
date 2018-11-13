@@ -742,3 +742,14 @@ Proof.
   Case "l = []". reflexivity.
   Case "l = x ::l'".
     simpl. rewrite <- IHl'. unfold fold_length. simpl. reflexivity. Qed.
+
+Definition fold_map {X Y:Type} (f : X -> Y) (l : list X) : list Y :=
+  fold (fun x l' => cons (f x) l') l [].
+
+Theorem fold_map_correct : forall (X Y : Type) (f : X -> Y) (l : list X),
+    fold_map f l = map f l.
+Proof.
+  intros X Y f l. induction l as [| x l'].
+  Case "l = []". reflexivity.
+  Case "l = x :: l'".
+    simpl. rewrite <- IHl'. unfold fold_map. simpl. reflexivity. Qed.
