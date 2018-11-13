@@ -660,3 +660,19 @@ Proof.
       apply beq_nat_eq in Heqeqk.
       rewrite <- Heqeqk. symmetry. apply H.
     Case "beq_nat k1 k2 = false". reflexivity. Qed.
+
+Theorem filter_exercise : forall (X : Type) (test : X -> bool)
+                             (x : X) (l lf : list X),
+     filter test l = x :: lf ->
+     test x = true.
+Proof.
+  intros X test x l. induction l as [| x' l'].
+    Case "l = []".
+      intros. inversion H.
+    Case "l = x' :: l'".
+      intros. unfold filter in H.
+      remember (test x') as eqt. destruct eqt.
+        SCase "test x' = true".
+          inversion H. rewrite <- H1. symmetry. apply Heqeqt.
+        SCase "test x' = false".
+          apply IHl' in H. apply H. Qed.
