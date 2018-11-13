@@ -527,7 +527,14 @@ Theorem beq_nat_0_l : forall n,
   true = beq_nat 0 n -> 0 = n.
 Proof.
   intros n. induction n as [| n'].
-  Case "n = 0".
-    reflexivity.
+  Case "n = 0". reflexivity.
+  Case "n = S n'".
+    intros contra. inversion contra. Qed.
+
+Theorem beq_nat_0_r : forall n,
+  true = beq_nat n 0 -> 0 = n.
+Proof.
+  intros n. induction n as [| n'].
+  Case "n = 0". reflexivity.
   Case "n = S n'".
     intros contra. inversion contra. Qed.
