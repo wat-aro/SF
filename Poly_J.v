@@ -538,3 +538,52 @@ Proof.
   Case "n = 0". reflexivity.
   Case "n = S n'".
     intros contra. inversion contra. Qed.
+
+Theorem double_injective : forall n m,
+    double n = double m ->
+    n = m.
+Proof.
+  intros n. induction n as [| n'].
+  Case "n = 0".
+    intros m. induction m as [| m'].
+    SCase "m = 0". reflexivity.
+    SCase "m = S m'". intros contra. inversion contra.
+  Case "n = S n'".
+    intros m. induction m as [| m'].
+    SCase "m = 0". intros contra. inversion contra.
+    SCase "m = S m'".
+    intros H. apply eq_remove_S. apply IHn'. inversion H. reflexivity. Qed.
+
+Theorem S_inj : forall (n m : nat) (b : bool),
+    beq_nat (S n) (S m) = b  ->
+    beq_nat n m = b.
+Proof.
+  intros n m b H. simpl in H. apply H. Qed.
+
+Theorem silly3' : forall (n : nat),
+  (beq_nat n 5 = true -> beq_nat (S (S n)) 7 = true) ->
+     true = beq_nat n 5  ->
+     true = beq_nat (S (S n)) 7.
+Proof.
+  intros n eq H.
+  symmetry in H. apply eq in H. symmetry in H.
+  apply H. Qed.
+
+Theorem plus_n_n_injective : forall n m,
+     n + n = m + m ->
+     n = m.
+Proof.
+  intros n. induction n as [| n'].
+  Case "n = 0".
+    intros m. induction m as [| m'].
+    SCase "m = 0". reflexivity.
+    SCase "m = S m'". intros contra. inversion contra.
+  Case "n = S n'".
+    intros m H. induction m as [| m'].
+    SCase "m = 0". inversion H.
+    SCase "m = S m'".
+      rewrite <- plus_n_Sm in H. rewrite <- plus_n_Sm in H.
+      simpl in H. inversion H.
+      apply IHn' in H1.
+      apply eq_remove_S in H1.
+      apply H1. Qed.
