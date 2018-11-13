@@ -610,3 +610,20 @@ Proof.
   destruct (beq_nat k1 k2).
   Case "beq_nat k1 k2 = true". reflexivity.
   Case "beq_nat k1 k2 = false". reflexivity. Qed.
+
+
+Theorem split_combine : forall (X Y : Type) (l : list (X * Y)) (l1 : list X) (l2 : list Y),
+    split l = (l1, l2) -> combine l1 l2 = l.
+Proof.
+  intros X Y l. induction l as [| [x y] l'].
+    Case "l = []".
+      intros l1 l2 H. simpl in H. inversion H. reflexivity.
+    Case "l = [x y] :: l'".
+      intros l1 l2 H.
+      simpl in H.
+      destruct (split l') as [xs ys].
+      inversion H.
+      simpl.
+      rewrite -> IHl'.
+      reflexivity.
+      reflexivity. Qed.
