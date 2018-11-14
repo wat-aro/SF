@@ -753,3 +753,72 @@ Proof.
   Case "l = []". reflexivity.
   Case "l = x :: l'".
     simpl. rewrite <- IHl'. unfold fold_map. simpl. reflexivity. Qed.
+
+Module MumbleBaz.
+  Inductive mumble : Type :=
+  | a : mumble
+  | b : mumble -> nat -> mumble
+  | c : mumble.
+
+  Inductive grumble (X : Type) : Type :=
+  | d : mumble -> grumble X
+  | e : X -> grumble X.
+
+  Inductive baz : Type :=
+  | x : baz -> baz
+  | y : baz -> bool -> baz.
+End MumbleBaz.
+
+Fixpoint forallb {X : Type} (test : X -> bool) (l : list X) : bool :=
+  match l with
+  | [] => true
+  | h :: t => if test h then forallb test t else false
+  end.
+
+Fixpoint existsb {X : Type} (test : X -> bool) (l : list X) : bool :=
+  match l with
+  | [] => false
+  | h :: t => if test h then true else existsb test t
+  end.
+
+
+Example test_forallb1 : forallb oddb [1,3,5,7,9] = true.
+Proof. reflexivity. Qed.
+
+Example test_forallb2 : forallb negb [false,false] = true.
+Proof. reflexivity. Qed.
+
+Example test_forall3 : forallb evenb [0,2,4,5] = false.
+Proof. reflexivity. Qed.
+
+Example test_forallb4 : forallb (beq_nat 5) [] = true.
+Proof. reflexivity. Qed.
+
+Example test_existsb1 : existsb (beq_nat 5) [0,2,3,6] = false.
+Proof. reflexivity. Qed.
+
+Example test_existsb2 : existsb (andb true) [true,true,false] = true.
+Proof. reflexivity. Qed.
+
+Example test_existsb3 : existsb oddb [1,0,0,0,0,3] = true.
+Proof. reflexivity. Qed.
+
+Example test_existsb4 : existsb evenb [] = false.
+Proof. reflexivity. Qed.
+
+Definition existsb' {X : Type} (test : X -> bool) (l : list X) : bool :=
+  negb (forallb (fun x => (negb (test x))) l).
+
+Theorem existsb_correct : forall {X : Type} (test : X -> bool) (l : list X),
+    existsb' test l = existsb test l.
+Proof.
+  induction l as [|x l'].
+  Case "l = []". reflexivity.
+  Case "l = x :: l'".
+    unfold existsb'. simpl.
+    destruct (test x).
+    SCase "test x = true". reflexivity.
+    SCase "test x = false".
+      rewrite <- IHl'. unfold existsb'.
+      simpl. reflexivity.
+Qed.
