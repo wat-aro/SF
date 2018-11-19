@@ -73,3 +73,22 @@ Proof.
     SCase "n = O". intros eq. inversion eq.
     SCase "n = S n'".
       intros eq. apply IHl'. inversion eq. reflexivity. Qed.
+
+Theorem length_snoc''' : forall (n : nat) (X : Type)
+                              (v : X) (l : list X),
+     length l = n ->
+     length (snoc l v) = S n.
+Proof.
+  intros n X v l.
+  generalize dependent n.
+  induction l as [| x l'].
+  Case "l = []".
+    intros n eq. induction n as [| n'].
+    SCase "n = O". reflexivity.
+    SCase "n = S n'". inversion eq.
+  Case "l = x :: l'".
+    intros n eq. induction n as [| n'].
+    SCase "n = O". inversion eq.
+    SCase "n = S n'".
+      simpl. apply eq_remove_S.
+      apply IHl'. inversion eq. reflexivity. Qed.
