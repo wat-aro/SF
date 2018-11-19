@@ -56,3 +56,20 @@ Proof.
     SCase "n = S n'".
       rewrite <- plus_n_Sm in eq. rewrite <- plus_n_Sm in eq. inversion eq.
       apply eq_remove_S. apply IHm'. apply H0. Qed.
+
+Theorem index_after_last: forall (n : nat) (X : Type) (l : list X),
+     length l = n ->
+     index (S n) l = None.
+Proof.
+  intros n X l.
+  generalize dependent n.
+  induction l as [| x l'].
+  Case "l = []".
+    intros n. induction n as [| n'].
+    SCase "n = O". reflexivity.
+    SCase "n = S n'". intros eq. inversion eq.
+  Case " l = x :: l'".
+    intros n. induction n as [| n'].
+    SCase "n = O". intros eq. inversion eq.
+    SCase "n = S n'".
+      intros eq. apply IHl'. inversion eq. reflexivity. Qed.
