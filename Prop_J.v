@@ -130,3 +130,22 @@ Definition okd_before2_valid' : okd_before2 :=
       fun (H0 : day_before d2 d1) =>
         fun (H1 : day_before d3 d2) =>
           okd_before d1 d2 (okd_before d2 d3 H H1) H0.
+
+Print okd_before2_valid.
+
+Check nat_ind.
+
+Theorem mult_0_r' : forall n : nat,
+    n * 0 = 0.
+Proof.
+  apply nat_ind.
+  Case "O". reflexivity.
+  Case "S". simpl. intros n IHn. rewrite -> IHn.
+    reflexivity. Qed.
+
+Theorem plus_one_r' : forall n:nat,
+  n + 1 = S n.
+Proof.
+  apply nat_ind.
+  Case "0". reflexivity.
+  Case "S n". intros n H. simpl. apply eq_remove_S. apply H. Qed.
