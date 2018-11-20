@@ -92,3 +92,20 @@ Proof.
     SCase "n = S n'".
       simpl. apply eq_remove_S.
       apply IHl'. inversion eq. reflexivity. Qed.
+
+Theorem app_length_cons : forall (X : Type) (l1 l2 : list X)
+                                  (x : X) (n : nat),
+     length (l1 ++ (x :: l2)) = n ->
+     S (length (l1 ++ l2)) = n.
+Proof.
+  intros X l1 l2 x.
+  induction l1 as [| v l'].
+  Case "l = []".
+    simpl. intros n eq. apply eq.
+  Case "l = v :: l'".
+    destruct n as [| n'].
+    SCase "n = O".
+      intros eq. inversion eq.
+    SCase "n = S n'".
+      simpl. intros eq. inversion eq.
+      rewrite -> (IHl' n'). symmetry. apply eq. apply H0. Qed.
