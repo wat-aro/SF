@@ -149,3 +149,31 @@ Proof.
   apply nat_ind.
   Case "0". reflexivity.
   Case "S n". intros n H. simpl. apply eq_remove_S. apply H. Qed.
+
+Inductive yesno : Type :=
+| yes : yesno
+| no : yesno.
+
+Check yesno_ind.
+
+Inductive rgb : Type :=
+  | red : rgb
+  | green : rgb
+  | blue : rgb.
+Check rgb_ind.
+
+Inductive natlist : Type :=
+| nnil : natlist
+| ncons : nat -> natlist -> natlist.
+
+Check natlist_ind.
+
+Inductive natlist1 : Type :=
+| nnil1 : natlist1
+| nsnoc1 : natlist1 -> nat -> natlist1.
+Check natlist1_ind.
+
+Inductive ExSet : Type :=
+| con1 : bool -> ExSet
+| con2 : nat -> ExSet -> ExSet.
+Check ExSet_ind.
