@@ -109,3 +109,29 @@ Proof.
     SCase "n = S n'".
       simpl. intros eq. inversion eq.
       rewrite -> (IHl' n'). symmetry. apply eq. apply H0. Qed.
+
+Theorem app_length_twice : forall (X:Type) (n:nat) (l:list X),
+     length l = n ->
+     length (l ++ l) = n + n.
+Proof.
+  intros X n l.
+  generalize dependent n.
+  induction l as [| x l'].
+  Case "l = []".
+    simpl. intros n eq. inversion eq. reflexivity.
+  Case "l = x :: l'".
+    destruct n as [| n'].
+    SCase "n = O".
+      intros eq. inversion eq.
+    SCase "n = S n'".
+      intros eq. simpl in eq. inversion eq.
+      apply IHl' in H0. inversion eq.
+      simpl. apply eq_remove_S. rewrite <- plus_n_Sm.
+      assert (forall (X : Type) (l1 l2 : list X) (x : X), length (l1 ++ x :: l2) = S (length (l1 ++ l2))) as H.
+        intros X0 l1 l2 x0.
+        generalize dependent l2.
+        induction l1 as [| x1 l1'].
+        SSCase "l = []". reflexivity.
+        SSCase "l = x1 :: l1'".
+          simpl. intros l2. apply eq_remove_S. apply IHl1'.
+      rewrite -> H. apply eq_remove_S. rewrite -> H0. rewrite -> H1. reflexivity. Qed.
