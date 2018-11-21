@@ -177,3 +177,80 @@ Inductive ExSet : Type :=
 | con1 : bool -> ExSet
 | con2 : nat -> ExSet -> ExSet.
 Check ExSet_ind.
+
+Inductive tree (X : Type) : Type :=
+| leaf : X -> tree X
+| node : tree X -> tree X -> tree X.
+Check tree_ind.
+(*
+  tree_ind :
+    forall (X : Type) (P : tree X -> Prop),
+      (forall x : X, P (leaf X x)) ->
+      (forall t : tree X, P t -> forall t0 : tree X, P t0 -> P (node X t t0)) ->
+      forall t : tree X, P t
+ *)
+
+Inductive mytype (X : Type) : Type :=
+| constr1 : X -> mytype X
+| constr2 : nat -> mytype X
+| constr3 : mytype X -> nat -> mytype X.
+(*
+   mytype_ind :
+     forall (X : Type) (P : mytype X -> Prop),
+       (forall x : X, P (constr1 X x)) ->
+       (forall n : nat, P (constr2 X n)) ->
+       (forall m : mytype X, P m ->
+         forall n : nat, P (constr3 X m n)) ->
+       forall m : mytype X, P m
+
+ *)
+
+Check mytype_ind.
+
+Inductive foo (X Y : Type) : Type :=
+| bar : X -> foo X Y
+| baz : Y -> foo X Y
+| quux : (nat -> foo X Y) -> nat -> foo X Y.
+
+Check foo_ind.
+
+Inductive foo' (X : Type) : Type :=
+| C1 : list X -> foo' X -> foo' X
+| C2 : foo' X.
+Check foo'_ind.
+(*
+   foo'_ind :
+     forall (X : Type) (P : foo' X -> Prop),
+       (forall (l : list X) (f : foo' X),
+         P f -> P (C1 X l f)) ->
+       P (C2 X) ->
+       forall f1 : foo' X, P f1
+ *)
+
+Definition P_m0r (n:nat) : Prop :=
+  n * 0 = 0.
+
+Definition P_m0r' : nat->Prop :=
+  fun n => n * 0 = 0.
+
+Theorem mult_0_r'' : forall n:nat,
+  P_m0r n.
+Proof.
+  apply nat_ind.
+  Case "n = O". reflexivity.
+  Case "n = S n'".
+
+    unfold P_m0r. simpl. intros n' IHn'.
+    apply IHn'.  Qed.
+
+Inductive ev : nat -> Prop :=
+  | ev_0 : ev O
+  | ev_SS : forall n:nat, ev n -> ev (S (S n)).
+
+Theorem four_ev' :
+  ev 4.
+Proof.
+  apply ev_SS. apply ev_SS. apply ev_0. Qed.
+
+Definition four_ev : ev 4 :=
+  ev_SS 2 (ev_SS 0 ev_0).
