@@ -272,3 +272,9 @@ Proof.
   Case "n = 0". simpl. apply ev_0.
   Case "n = S n'".
     simpl. apply ev_SS. apply IHn'. Qed.
+
+Definition double_even' : forall n, ev (double n) :=
+  nat_ind
+    (fun (n : nat) => ev (double n))
+    ev_0
+    (fun (n' : nat) (IHn' : ev (double n')) => ev_SS (double n') IHn').
