@@ -264,3 +264,11 @@ Proof.
 
 Definition ev_plus4 : forall n, ev n -> ev (4 + n) :=
   fun (n : nat) (Hev : ev n) => ev_SS (S (S n)) (ev_SS n Hev).
+
+Theorem double_even : forall n,
+  ev (double n).
+Proof.
+  intros n. induction n as [| n'].
+  Case "n = 0". simpl. apply ev_0.
+  Case "n = S n'".
+    simpl. apply ev_SS. apply IHn'. Qed.
