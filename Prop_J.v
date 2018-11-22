@@ -254,3 +254,13 @@ Proof.
 
 Definition four_ev : ev 4 :=
   ev_SS 2 (ev_SS 0 ev_0).
+
+Theorem ev_plus4' : forall n,
+  ev n -> ev (4 + n).
+Proof.
+  simpl.
+  intros n Hev.
+  apply ev_SS. apply ev_SS. apply Hev. Qed.
+
+Definition ev_plus4 : forall n, ev n -> ev (4 + n) :=
+  fun (n : nat) (Hev : ev n) => ev_SS (S (S n)) (ev_SS n Hev).
