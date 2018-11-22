@@ -278,3 +278,24 @@ Definition double_even' : forall n, ev (double n) :=
     (fun (n : nat) => ev (double n))
     ev_0
     (fun (n' : nat) (IHn' : ev (double n')) => ev_SS (double n') IHn').
+
+Theorem ev_minus2: forall n,
+  ev n -> ev (pred (pred n)).
+Proof.
+  intros n E. induction E as [| n' E'].
+  Case "E = ev_0". simpl.
+  apply ev_0.
+  Case "E = ev_SS". simpl. apply E'. Qed.
+
+Definition ev_minus2' : forall (n : nat), ev n -> ev (pred (pred n)) :=
+  ev_ind
+    (fun (n' : nat) => ev (pred (pred n')))
+    ev_0
+    (fun (n'' : nat) (E' : ev n'') =>  (fun (E'' : ev (pred (pred n''))) => E')).
+
+Theorem ev_minus2'' : forall n,
+    ev n -> ev (pred (pred n)).
+Proof.
+  intros n E. destruct n as [| n'].
+  Case "n = 0". simpl. apply E.
+  Case "n = S n'". inversion E. simpl. apply H0. Qed.
