@@ -299,3 +299,37 @@ Proof.
   intros n E. destruct n as [| n'].
   Case "n = 0". simpl. apply E.
   Case "n = S n'". inversion E. simpl. apply H0. Qed.
+
+Theorem ev_even : forall n,
+  ev n -> even n.
+Proof.
+  intros n E. induction E as [| n' E'].
+  Case "E = ev_0". reflexivity.
+  Case "E = ev_SS n' E'".
+    unfold even. apply IHE'. Qed.
+
+Theorem ev_even_n : forall n,
+    ev n -> even n.
+Proof.
+  intros n E. induction n as [| n'].
+  Case "n = 0". reflexivity.
+  Case "n = S n'".
+    inversion E. unfold even.
+  Admitted.
+
+Theorem ev_sum : forall n m,
+   ev n -> ev m -> ev (n+m).
+Proof.
+  intros n m En Em. induction En as [| n' En'].
+  Case "En = ev_0".
+    simpl. apply Em.
+  Case "En = ev_SS n' En'".
+    simpl. apply ev_SS. apply IHEn'. Qed.
+
+Definition ev_sum' : forall n m, ev n -> ev m -> ev (n + m) :=
+  fun (n m : nat) (En : ev n) (Em : ev m) =>
+    (ev_ind
+      (fun (n' : nat) => ev (n' + m))
+      Em
+      (fun (n' : nat) (En' : ev n') (Enm : ev (n' + m)) => ev_SS (n' + m) Enm))
+      n En.
