@@ -356,3 +356,23 @@ Theorem even5_nonsense :
   ev 5 -> 2 + 2 = 9.
 Proof.
   intros E. inversion E. inversion H0. inversion H2. Qed.
+
+Theorem ev_minus2''': forall n,
+  ev n -> ev (pred (pred n)).
+Proof.
+  intros n E. inversion E as [| n' E'].
+  Case "E = ev_0". simpl. apply ev_0.
+  Case "E = ev_SS n' E'". simpl. apply E'. Qed.
+
+Theorem ev_ev_even : forall n m,
+  ev (n+m) -> ev n -> ev m.
+Proof.
+  intros n m Enm E.
+  generalize dependent Enm.
+  generalize dependent m.
+  induction E as [| n' E'].
+  Case "ev n = ev_0".
+    intros m Enm. apply Enm.
+  Case "ev n = ev_SS n' E'".
+    simpl. intros m Em. inversion Em as [| nm Em'].
+    apply IHE'. apply Em'. Qed.
