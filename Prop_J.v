@@ -333,3 +333,21 @@ Definition ev_sum' : forall n m, ev n -> ev m -> ev (n + m) :=
       Em
       (fun (n' : nat) (En' : ev n') (Enm : ev (n' + m)) => ev_SS (n' + m) Enm))
       n En.
+
+Theorem SSev_ev_firsttry : forall n,
+  ev (S (S n)) -> ev n.
+Proof.
+  intros n E.
+  destruct E as [| n' E'].
+
+Admitted.
+
+Theorem SSev_even : forall n,
+  ev (S (S n)) -> ev n.
+Proof.
+  intros n E. inversion E as [| n' E']. apply E'. Qed.
+
+Theorem SSSSev_even : forall n,
+  ev (S (S (S (S n)))) -> ev n.
+Proof.
+  intros n E. inversion E as [| n' E']. inversion E' as [| n'' E'']. apply E''. Qed.
