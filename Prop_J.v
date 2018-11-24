@@ -376,3 +376,18 @@ Proof.
   Case "ev n = ev_SS n' E'".
     simpl. intros m Em. inversion Em as [| nm Em'].
     apply IHE'. apply Em'. Qed.
+
+Theorem ev_plus_plus : forall n m p,
+  ev (n+m) -> ev (n+p) -> ev (m+p).
+Proof.
+  intros n m p Enm Enp.
+  apply (ev_ev_even (n + n) (m + p)).
+  rewrite <- (plus_assoc' n n (m + p)).
+  rewrite -> (plus_assoc' n m p).
+  rewrite -> (plus_comm (n + m) p).
+  rewrite -> (plus_assoc' n p (n + m)).
+  apply (ev_sum (n + p) (n + m)).
+  apply Enp.
+  apply Enm.
+  rewrite <- double_plus.
+  apply double_even. Qed.
