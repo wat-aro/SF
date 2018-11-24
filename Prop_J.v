@@ -434,3 +434,22 @@ Proof.
     apply MyProp2. apply IHE.
   Case "E = MyProp3".
     apply E. Qed.
+
+Theorem MyProp_ev : forall n:nat,
+  ev n -> MyProp n.
+Proof.
+  intros n E.
+  induction E as [| n' E'].
+  Case "E = ev_0".
+    apply MyProp_0.
+  Case "E = ev_SS n' E'".
+    apply MyProp_plustwo. apply IHE'.  Qed.
+
+Theorem ev_MyProp : forall n:nat,
+  MyProp n -> ev n.
+Proof.
+  intros n M.
+  induction M.
+    Case "M = MyProp1". apply ev_SS. apply ev_SS. apply ev_0.
+    Case "M = MyProp2". apply ev_SS. apply ev_SS. apply IHM.
+    Case "M = MyProp2". apply SSev_even. apply IHM. Qed.
