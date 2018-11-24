@@ -391,3 +391,29 @@ Proof.
   apply Enm.
   rewrite <- double_plus.
   apply double_even. Qed.
+
+Inductive MyProp : nat -> Prop :=
+| MyProp1 : MyProp 4
+| MyProp2 : forall n : nat, MyProp n -> MyProp (4 + n)
+| MyProp3 : forall n : nat, MyProp (2 + n) -> MyProp n.
+
+Theorem MyProp_ten : MyProp 10.
+Proof.
+  apply MyProp3. simpl.
+  assert (12 = 4 + 8) as H12.
+    Case "Proof of assert". reflexivity.
+  rewrite -> H12.
+  apply MyProp2.
+  assert (8 = 4 + 4) as H8.
+    Case "Proof of assert". reflexivity.
+  rewrite -> H8.
+  apply MyProp2.
+  apply MyProp1. Qed.
+
+Theorem MyProp_0 : MyProp 0.
+Proof.
+  apply MyProp3.
+  simpl.
+  apply MyProp3.
+  simpl.
+  apply MyProp1. Qed.
