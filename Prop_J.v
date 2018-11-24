@@ -417,3 +417,20 @@ Proof.
   apply MyProp3.
   simpl.
   apply MyProp1. Qed.
+
+Theorem MyProp_plustwo : forall n:nat, MyProp n -> MyProp (S (S n)).
+Proof.
+  intros n E.
+  induction E.
+  Case "E = MyProp1".
+    assert (6 = 4 + 2) as H6.
+      SCase "Proof of assert". reflexivity.
+    rewrite -> H6.
+    apply MyProp2.
+    apply MyProp3.
+    simpl.
+    apply MyProp1.
+  Case "E = MyProp2".
+    apply MyProp2. apply IHE.
+  Case "E = MyProp3".
+    apply E. Qed.
