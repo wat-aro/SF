@@ -471,3 +471,15 @@ Proof.
   Case "MyProp1". apply ev_SS. apply ev_SS. apply ev_0.
   Case "MyProp2". intros n E IHE. apply ev_SS. apply ev_SS. apply IHE.
   Case "MyProp3". intros n E IHE. apply SSev_even. apply IHE. Qed.
+
+Definition MyProp_ev' : forall n:nat, ev n -> MyProp n :=
+  ev_ind (fun (n : nat) => MyProp n)
+         MyProp_0
+         (fun (n' : nat) (E' : ev n') (M' : MyProp n') => MyProp_plustwo n' M').
+
+Definition ev_MyProp'' : forall n : nat, MyProp n -> ev n :=
+  MyProp_ind
+    (fun (n' : nat) => ev n')
+    (ev_SS _ (ev_SS _ ev_0))
+    (fun (n' : nat) (M : MyProp n') (E : ev n') => ev_SS _ (ev_SS _ E))
+    (fun (n' : nat) (M : MyProp (2 + n')) (E : ev (2 + n')) => SSev_even n' E).
