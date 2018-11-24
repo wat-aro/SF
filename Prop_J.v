@@ -453,3 +453,21 @@ Proof.
     Case "M = MyProp1". apply ev_SS. apply ev_SS. apply ev_0.
     Case "M = MyProp2". apply ev_SS. apply ev_SS. apply IHM.
     Case "M = MyProp2". apply SSev_even. apply IHM. Qed.
+
+Theorem ev_even' : forall n,
+    ev n -> even n.
+Proof.
+  apply ev_ind.
+    Case "ev_0". unfold even. reflexivity.
+    Case "ev_SS". intros n' E' IHE'. unfold even. apply IHE'. Qed.
+
+Check list_ind.
+Check MyProp_ind.
+
+Theorem ev_MyProp' : forall n:nat,
+  MyProp n -> ev n.
+Proof.
+  apply MyProp_ind.
+  Case "MyProp1". apply ev_SS. apply ev_SS. apply ev_0.
+  Case "MyProp2". intros n E IHE. apply ev_SS. apply ev_SS. apply IHE.
+  Case "MyProp3". intros n E IHE. apply SSev_even. apply IHE. Qed.
