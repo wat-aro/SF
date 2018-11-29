@@ -128,7 +128,7 @@ Proof.
   Case "s = v' :: s'".
     simpl. rewrite -> IHs'. reflexivity. Qed.
 
-Theorem snoc_wiuth_append : forall X : Type, forall l1 l2 : list X, forall v : X,
+Theorem snoc_with_append : forall X : Type, forall l1 l2 : list X, forall v : X,
         snoc (l1 ++ l2) v = l1 ++ (snoc l2 v).
 Proof.
   intros. induction l1 as [| v' l1'].

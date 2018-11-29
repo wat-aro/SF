@@ -483,3 +483,28 @@ Definition ev_MyProp'' : forall n : nat, MyProp n -> ev n :=
     (ev_SS _ (ev_SS _ ev_0))
     (fun (n' : nat) (M : MyProp n') (E : ev n') => ev_SS _ (ev_SS _ E))
     (fun (n' : nat) (M : MyProp (2 + n')) (E : ev (2 + n')) => SSev_even n' E).
+
+Module P.
+  Inductive p : (tree nat) -> nat -> Prop :=
+  | c1 : forall n, p (leaf _ n) 1
+  | c2 : forall t1 t2 n1 n2,
+      p t1 n1 -> p t2 n2 -> p (node _ t1 t2) (n1 + n2)
+  | c3 : forall t n, p t n -> p t (S n).
+End P.
+
+Inductive pal {X : Type} : list X -> Prop :=
+| pal_rev (l : list X) : l = rev l -> pal l.
+
+Theorem pal_append_rev : forall (X : Type) (l : list X),
+    pal (l ++ rev l).
+Proof.
+  intros X l.
+  apply pal_rev.
+  induction l as [| x l'].
+  Case "l = []". reflexivity.
+  Case "l = x :: l'".
+    simpl.
+    rewrite <- snoc_with_append.
+    rewrite -> rev_snoc.
+    rewrite <- IHl'.
+    simpl. reflexivity. Qed.
