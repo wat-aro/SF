@@ -508,3 +508,9 @@ Proof.
     rewrite -> rev_snoc.
     rewrite <- IHl'.
     simpl. reflexivity. Qed.
+
+Theorem pal_id_rev : forall (X : Type) (l : list X),
+    pal l -> l = rev l.
+Proof.
+  intros X l P.
+  induction P. apply H. Qed.
