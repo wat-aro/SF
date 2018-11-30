@@ -514,3 +514,8 @@ Theorem pal_id_rev : forall (X : Type) (l : list X),
 Proof.
   intros X l P.
   induction P. apply H. Qed.
+
+Theorem id_rev_pal : forall (X : Type) (l : list X),
+    l = rev l -> pal l.
+Proof.
+  intros X l eq. apply pal_rev. apply eq. Qed.
