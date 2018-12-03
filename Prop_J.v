@@ -519,3 +519,56 @@ Theorem id_rev_pal : forall (X : Type) (l : list X),
     l = rev l -> pal l.
 Proof.
   intros X l eq. apply pal_rev. apply eq. Qed.
+
+Inductive subseq : list nat -> list nat -> Prop :=
+| subseq_0 : forall (l : list nat), subseq [] l
+| subseq_tail : forall (x : nat) (l xs : list nat), subseq l xs -> subseq (x :: l) (x :: xs)
+| subseq_all : forall (x : nat) ( l xs : list nat), subseq l xs -> subseq l (x :: xs).
+
+Theorem subseq_refl : forall l : list nat, subseq l l.
+Proof.
+  intros l. induction l as [| n l'].
+  Case "l = []". apply subseq_0.
+  Case "l = n :: l'".
+    apply subseq_tail. apply IHl'. Qed.
+
+Theorem subseq_app : forall (l1 l2 l3 : list nat),
+    subseq l1 l2 -> subseq l1 (l2 ++ l3).
+Proof.
+  intros l1 l2 l3 s.
+  induction s.
+  apply subseq_0.
+  simpl. apply subseq_tail. apply IHs.
+  simpl. apply subseq_all. apply IHs. Qed.
+
+Theorem subseq_trans : forall (l1 l2 l3 : list nat),
+    subseq l1 l2 -> subseq l2 l3 -> subseq l1 l3.
+Proof.
+  intros l1 l2 l3.
+  generalize dependent l2.
+  generalize dependent l1.
+  induction l3 as [| n3 l3'].
+  Case "l3 = []".
+    intros l1 l2 s1 s2. inversion s2.
+    rewrite <- H in s1. inversion s1. apply subseq_0.
+  Case "l3 = n3 :: l3'".
+    intros l1 l2 s1 s2. inversion s2.
+      SCase "subseq_0".
+        rewrite <- H in s1. inversion s1. apply subseq_0.
+      SCase "subseq_tail".
+        subst n3 l2 l3'. inversion s1.
+        SSCase "subseq_0".
+          apply subseq_0.
+        SSCase "subseq_tail".
+          subst x l l1. apply subseq_tail.
+          apply (IHl3' l0 xs0).
+          apply H2.
+          apply H1.
+        SSCase "subseq_all".
+          subst l x l1. apply subseq_all. apply (IHl3' l0 xs0).
+          apply H2.
+          apply H1.
+      SCase "subseq_all".
+        subst l3' n3 l2. apply subseq_all. apply (IHl3' l1 l).
+        apply s1.
+        apply H1. Qed.
