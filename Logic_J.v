@@ -62,3 +62,20 @@ Proof.
   apply HP.
   apply HQ.
   apply HR. Qed.
+
+Theorem even_ev : forall n : nat,
+  (even n -> ev n) /\ (even (S n) -> ev (S n)).
+Proof.
+  intros n. induction n as [| n'].
+  Case "n = 0".
+    split.
+    SCase "left".
+      intros E0. apply ev_0.
+    SCase "right".
+      intros E0. inversion E0.
+  Case "n = S n'".
+    split.
+    SCase "left".
+      apply IHn'.
+    SCase "right".
+      intros E0. apply ev_SS. apply IHn'. inversion E0. apply H0. Qed.
