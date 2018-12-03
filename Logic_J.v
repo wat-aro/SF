@@ -40,3 +40,25 @@ Proof.
   intros P Q H.
   inversion H as [HP HQ].
   apply HQ. Qed.
+
+Theorem and_commut : forall P Q : Prop,
+  P /\ Q -> Q /\ P.
+Proof.
+  intros P Q H.
+  inversion H as [HP HQ].
+  split.
+    apply HQ.
+    apply HP. Qed.
+
+Print and_commut.
+
+Theorem and_assoc : forall P Q R : Prop,
+  P /\ (Q /\ R) -> (P /\ Q) /\ R.
+Proof.
+  intros P Q R H.
+  inversion H as [HP [HQ HR]].
+  split.
+  split.
+  apply HP.
+  apply HQ.
+  apply HR. Qed.
