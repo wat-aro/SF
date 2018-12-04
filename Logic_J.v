@@ -132,3 +132,27 @@ Proof.
 
 Definition MyProp_iff_ev : forall n, MyProp n <-> ev n :=
   fun (n : nat) => conj (MyProp n -> ev n) (ev n -> MyProp n) (ev_MyProp n) (MyProp_ev n).
+
+Inductive or (P Q : Prop) : Prop :=
+  | or_introl : P -> or P Q
+  | or_intror : Q -> or P Q.
+
+Notation "P \/ Q" := (or P Q) : type_scope.
+
+Check or_introl.
+Check or_intror.
+
+Theorem or_commut : forall P Q : Prop,
+  P \/ Q  -> Q \/ P.
+Proof.
+  intros P Q H.
+  inversion H as [HP | HQ].
+    Case "right". apply or_intror. apply HP.
+    Case "left". apply or_introl. apply HQ.  Qed.
+
+Definition or_commut' : forall P Q : Prop, P \/ Q  -> Q \/ P :=
+  fun (P Q : Prop) H =>
+    match H with
+    | or_introl _ _ P => or_intror _ _ P
+    | or_intror _ _ Q => or_introl _ _ Q
+    end.
