@@ -88,3 +88,44 @@ Definition conj_fact : forall P Q R, P /\ Q -> Q /\ R -> P /\ R :=
       | conj _ _ HQ HR => conj P R HP HR
       end
     end.
+
+Definition iff (P Q : Prop) := (P -> Q) /\ (Q -> P).
+
+Notation "P <-> Q" := (iff P Q)
+                        (at level 95, no associativity) : type_scope.
+
+Theorem iff_implies : forall P Q : Prop,
+  (P <-> Q) -> P -> Q.
+Proof.
+  intros P Q H.
+  inversion H as [HAB HBA]. apply HAB.  Qed.
+
+Theorem iff_sym : forall P Q : Prop,
+  (P <-> Q) -> (Q <-> P).
+Proof.
+
+  intros P Q H.
+  inversion H as [HAB HBA].
+  split.
+    Case "->". apply HBA.
+    Case "<-". apply HAB.  Qed.
+
+Theorem iff_refl : forall P : Prop,
+  P <-> P.
+Proof.
+  intros P.
+  split.
+    Case "->". intros P1. apply P1.
+    Case "<-". intros P1. apply P1. Qed.
+
+Theorem iff_trans : forall P Q R : Prop,
+  (P <-> Q) -> (Q <-> R) -> (P <-> R).
+Proof.
+  intros P Q R H0 H1.
+  inversion H0 as [H0AB H0BA].
+  inversion H1 as [H1AB H1BA].
+  split.
+    Case "->".
+      intros H2. apply H1AB. apply H0AB. apply H2.
+    Case "<-".
+      intros H2. apply H0BA. apply H1BA. apply H2. Qed.
