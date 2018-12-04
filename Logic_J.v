@@ -79,3 +79,12 @@ Proof.
       apply IHn'.
     SCase "right".
       intros E0. apply ev_SS. apply IHn'. inversion E0. apply H0. Qed.
+
+Definition conj_fact : forall P Q R, P /\ Q -> Q /\ R -> P /\ R :=
+  fun (P Q R : Prop) H0 H1 =>
+    match H0 with
+    | conj _ _ HP HQ =>
+      match H1 with
+      | conj _ _ HQ HR => conj P R HP HR
+      end
+    end.
