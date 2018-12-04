@@ -129,3 +129,6 @@ Proof.
       intros H2. apply H1AB. apply H0AB. apply H2.
     Case "<-".
       intros H2. apply H0BA. apply H1BA. apply H2. Qed.
+
+Definition MyProp_iff_ev : forall n, MyProp n <-> ev n :=
+  fun (n : nat) => conj (MyProp n -> ev n) (ev n -> MyProp n) (ev_MyProp n) (MyProp_ev n).
