@@ -280,3 +280,10 @@ Proof.
   intros P Q H R.
   unfold not. unfold not in R. intros HP.
   apply R. apply H. apply HP. Qed.
+
+Theorem not_both_true_and_false : forall P : Prop,
+  ~ (P /\ ~P).
+Proof.
+  intros P.
+  unfold not. intros HP.
+  inversion HP as [HP0 HP1]. apply HP1. apply HP0. Qed.
