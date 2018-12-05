@@ -287,3 +287,18 @@ Proof.
   intros P.
   unfold not. intros HP.
   inversion HP as [HP0 HP1]. apply HP1. apply HP0. Qed.
+
+Theorem five_not_even :
+  ~ ev 5.
+Proof.
+
+  unfold not. intros Hev5. inversion Hev5 as [|n Hev3 Heqn].
+  inversion Hev3 as [|n' Hev1 Heqn']. inversion Hev1.  Qed.
+
+Theorem ev_not_ev_S : forall n,
+  ev n -> ~ ev (S n).
+Proof.
+  unfold not. intros n H. induction H.
+  Case "ev_0".
+    intros contra. inversion contra.
+  Case "ev_SS". intros contra. inversion contra. apply IHev. apply H1. Qed.
