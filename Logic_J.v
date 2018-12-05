@@ -249,3 +249,34 @@ Proof.
 
 Inductive True : Prop :=
 | T : True.
+
+Definition not (P:Prop) := P -> False.
+
+Notation "~ x" := (not x) : type_scope.
+
+Check not.
+
+Theorem not_False :
+  ~ False.
+Proof.
+  unfold not. intros H. inversion H.  Qed.
+
+Theorem contradiction_implies_anything : forall P Q : Prop,
+  (P /\ ~P) -> Q.
+Proof.
+
+  intros P Q H. inversion H as [HP HNA]. unfold not in HNA.
+  apply HNA in HP. inversion HP.  Qed.
+
+Theorem double_neg : forall P : Prop,
+  P -> ~~P.
+Proof.
+
+  intros P H. unfold not. intros G. apply G. apply H.  Qed.
+
+Theorem contrapositive : forall P Q : Prop,
+  (P -> Q) -> (~Q -> ~P).
+Proof.
+  intros P Q H R.
+  unfold not. unfold not in R. intros HP.
+  apply R. apply H. apply HP. Qed.
