@@ -156,3 +156,25 @@ Definition or_commut' : forall P Q : Prop, P \/ Q  -> Q \/ P :=
     | or_introl _ _ P => or_intror _ _ P
     | or_intror _ _ Q => or_introl _ _ Q
     end.
+
+Theorem or_distributes_over_and_1 : forall P Q R : Prop,
+  P \/ (Q /\ R) -> (P \/ Q) /\ (P \/ R).
+Proof.
+  intros P Q R. intros H. inversion H as [HP | [HQ HR]].
+    Case "left". split.
+      SCase "left". left. apply HP.
+      SCase "right". left. apply HP.
+    Case "right". split.
+      SCase "left". right. apply HQ.
+      SCase "right". right. apply HR.  Qed.
+
+Theorem or_distributes_over_and_2 : forall P Q R : Prop,
+  (P \/ Q) /\ (P \/ R) -> P \/ (Q /\ R).
+Proof.
+  intros P Q R. intros H. inversion H as [[HP0 | HQ] [HP1 | HR]].
+    Case "left left". left. apply HP0.
+    Case "left right". left. apply HP0.
+    Case "right left". left. apply HP1.
+    Case "right right". right. split.
+      SCase "right". apply HQ.
+      SCase "left". apply HR. Qed.
