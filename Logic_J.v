@@ -226,3 +226,26 @@ Proof.
   Case "b = false". simpl in H. split.
     SCase "left". reflexivity.
     SCase "right".apply H. Qed.
+
+Inductive False : Prop := .
+
+Theorem False_implies_nonsense :
+  False -> 2 + 2 = 5.
+Proof.
+  intros contra.
+  inversion contra.  Qed.
+
+Theorem nonsense_implies_False :
+  2 + 2 = 5 -> False.
+Proof.
+  intros contra.
+  inversion contra.  Qed.
+
+Theorem ex_falso_quodlibet : forall (P:Prop),
+  False -> P.
+Proof.
+  intros P contra.
+  inversion contra.  Qed.
+
+Inductive True : Prop :=
+| T : True.
