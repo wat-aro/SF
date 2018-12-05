@@ -178,3 +178,10 @@ Proof.
     Case "right right". right. split.
       SCase "right". apply HQ.
       SCase "left". apply HR. Qed.
+
+Theorem or_distributes_over_and : forall P Q R : Prop,
+  P \/ (Q /\ R) <-> (P \/ Q) /\ (P \/ R).
+Proof.
+  intros P Q R. split.
+  Case "->". apply or_distributes_over_and_1.
+  Case "<-". apply or_distributes_over_and_2. Qed.
