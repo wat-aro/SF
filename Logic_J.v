@@ -425,3 +425,17 @@ Proof.
   inversion H1 as [x Hx].
   apply Hx.
   apply (H0 x). Qed.
+
+Theorem not_exists_dist :
+  excluded_middle ->
+  forall (X:Type) (P : X -> Prop),
+    ~ (exists x, ~ P x) -> (forall x, P x).
+Proof.
+  intros ex X P H0 x.
+  destruct (ex (P x)) as [XP | NXP].
+  Case "P x". apply XP.
+  Case "~ P x".
+    apply ex_falso_quodlibet.
+    unfold not in H0. unfold not in NXP.
+    apply H0.
+    exists x. apply NXP. Qed.
