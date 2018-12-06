@@ -452,3 +452,25 @@ Proof.
     intros H. destruct H as [HP | HQ].
     SCase "exists x : X, P x". inversion HP. exists witness. left. apply H.
     SCase "exists x : X, Q x". inversion HQ. exists witness. right. apply H. Qed.
+
+Module MyEquality.
+  Inductive eq (X:Type) : X -> X -> Prop :=
+    refl_equal : forall x, eq X x x.
+
+  Notation "x = y" := (eq _ x y)
+                    (at level 70, no associativity) : type_scope.
+
+  Inductive eq' (X:Type) (x:X) : X -> Prop :=
+    refl_equal' : eq' X x x.
+
+  Notation "x =' y" := (eq' _ x y)
+                         (at level 70, no associativity) : type_scope.
+
+  Theorem two_defs_of_eq_coincide : forall (X:Type) (x y : X),
+      x = y <-> x =' y.
+  Proof.
+    intros X x y. split.
+    Case "->".
+      intros H. inversion H. apply (refl_equal' X y).
+    Case "<-".
+      intros H. inversion H. apply (refl_equal X y). Qed.
