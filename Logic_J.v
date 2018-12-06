@@ -439,3 +439,16 @@ Proof.
     unfold not in H0. unfold not in NXP.
     apply H0.
     exists x. apply NXP. Qed.
+
+Theorem dist_exists_or : forall (X:Type) (P Q : X -> Prop),
+  (exists x, P x \/ Q x) <-> (exists x, P x) \/ (exists x, Q x).
+Proof.
+  intros X P Q. split.
+  Case "->".
+    intros H. inversion H. destruct H0 as [HP | HQ].
+    SCase "P witness". left. exists witness. apply HP.
+    SCase "Q witness". right. exists witness. apply HQ.
+  Case "<-".
+    intros H. destruct H as [HP | HQ].
+    SCase "exists x : X, P x". inversion HP. exists witness. left. apply H.
+    SCase "exists x : X, Q x". inversion HQ. exists witness. right. apply H. Qed.
