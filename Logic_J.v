@@ -380,3 +380,40 @@ Proof.
       unfold not. intros H0 H1. simpl in H0. inversion H1.
       unfold not in IHm'. apply (IHm' n').
       apply H0. apply H2. Qed.
+
+Inductive ex (X:Type) (P : X->Prop) : Prop :=
+  ex_intro : forall (witness:X), P witness -> ex X P.
+
+Definition some_nat_is_even : Prop :=
+  ex nat ev.
+
+Definition snie : some_nat_is_even :=
+  ex_intro _ ev 4 (ev_SS 2 (ev_SS 0 ev_0)).
+
+Notation "'exists' x , p" := (ex _ (fun x => p))
+  (at level 200, x ident, right associativity) : type_scope.
+Notation "'exists' x : X , p" := (ex _ (fun x:X => p))
+  (at level 200, x ident, right associativity) : type_scope.
+
+Example exists_example_1 : exists n, n + (n * n) = 6.
+Proof.
+  apply ex_intro with (witness:=2).
+  reflexivity.  Qed.
+
+Example exists_example_1' : exists n,
+     n + (n * n) = 6.
+Proof.
+  exists 2.
+  reflexivity.  Qed.
+
+Theorem exists_example_2 : forall n,
+     (exists m, n = 4 + m) ->
+     (exists o, n = 2 + o).
+Proof.
+  intros n H.
+  inversion H as [m Hm].
+  exists (2 + m).
+  apply Hm.  Qed.
+
+Definition p : ex nat (fun n => ev (S n)) :=
+  ex_intro _ (fun n => ev (S n)) 1 (ev_SS _ ev_0).
