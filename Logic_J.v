@@ -417,3 +417,11 @@ Proof.
 
 Definition p : ex nat (fun n => ev (S n)) :=
   ex_intro _ (fun n => ev (S n)) 1 (ev_SS _ ev_0).
+
+Theorem dist_not_exists : forall (X:Type) (P : X -> Prop),
+  (forall x, P x) -> ~ (exists x, ~ P x).
+Proof.
+  intros X P H0. unfold not. intros H1.
+  inversion H1 as [x Hx].
+  apply Hx.
+  apply (H0 x). Qed.
