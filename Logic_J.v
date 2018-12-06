@@ -358,3 +358,25 @@ Proof.
       SSCase "proof of assertion".
         unfold not. intros H0. intros H1. apply H0. rewrite <- H1. reflexivity.
       apply not_eq_S_not_eq. apply H. Qed.
+
+Theorem beq_false_not_eq : forall n m,
+  false = beq_nat n m -> n <> m.
+Proof.
+  intros n m.
+  generalize dependent n.
+  induction m as [| m'].
+  Case "m = 0".
+    destruct n as [| n'].
+    SCase "n = 0". simpl. intros H. inversion H.
+    SCase "n = S n'".
+      simpl. intros H.
+      unfold not. intros contra. inversion contra.
+  Case "m = S m'".
+    destruct n as [| n'].
+    SCase "n = 0".
+      simpl. intros H.
+      unfold not. intros contra. inversion contra.
+    SCase "n = S n'".
+      unfold not. intros H0 H1. simpl in H0. inversion H1.
+      unfold not in IHm'. apply (IHm' n').
+      apply H0. apply H2. Qed.
