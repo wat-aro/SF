@@ -535,3 +535,5 @@ Inductive next_even (n:nat) : nat -> Prop :=
 Inductive total_relation (R : nat -> nat -> Prop) (n m : nat) : Prop :=
 | tr : R n m \/ R m n -> total_relation R n m.
 
+Inductive empty_relation (n m : nat) : Prop :=
+| er : n < m /\ n > m -> empty_relation n m.
