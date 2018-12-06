@@ -302,3 +302,59 @@ Proof.
   Case "ev_0".
     intros contra. inversion contra.
   Case "ev_SS". intros contra. inversion contra. apply IHev. apply H1. Qed.
+
+Theorem classic_double_neg : forall P : Prop,
+  ~~P -> P.
+Proof.
+  unfold not. intros P H.
+  Admitted.
+
+Definition peirce := forall P Q: Prop,
+  ((P->Q)->P)->P.
+Definition classic := forall P:Prop,
+  ~~P -> P.
+Definition excluded_middle := forall P:Prop,
+  P \/ ~P.
+Definition de_morgan_not_and_not := forall P Q:Prop,
+  ~(~P/\~Q) -> P\/Q.
+Definition implies_to_or := forall P Q:Prop,
+  (P->Q) -> (~P\/Q).
+
+Notation "x <> y" := (~ (x = y)) : type_scope.
+
+Theorem not_false_then_true : forall b : bool,
+    b <> false -> b = true.
+Proof.
+  intros b H. destruct b.
+  Case "b = true". reflexivity.
+  Case "b = false".
+    unfold not in H.
+    apply ex_falso_quodlibet.
+    apply H. reflexivity. Qed.
+
+Check ex_falso_quodlibet.
+
+Theorem not_eq_beq_false : forall n n' : nat,
+    n <> n' ->
+    beq_nat n n' = false.
+Proof.
+  intros n m.
+  generalize dependent n.
+  induction m as [| m'].
+  Case "m = 0".
+    destruct n as [| n'].
+    SCase "n = 0".
+      intros H. simpl. apply ex_falso_quodlibet.
+      unfold not in H. apply H. reflexivity.
+    SCase "n = S n'".
+      intros H. simpl. reflexivity.
+  Case "m = S m'".
+    destruct n as [| n'].
+    SCase "n = 0".
+      intros H. simpl. reflexivity.
+    SCase "n = S n'".
+      intros H. simpl. apply (IHm' n').
+      assert (S n' <> S m' -> n' <> m') as not_eq_S_not_eq.
+      SSCase "proof of assertion".
+        unfold not. intros H0. intros H1. apply H0. rewrite <- H1. reflexivity.
+      apply not_eq_S_not_eq. apply H. Qed.
