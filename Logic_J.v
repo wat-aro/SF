@@ -474,3 +474,64 @@ Module MyEquality.
       intros H. inversion H. apply (refl_equal' X y).
     Case "<-".
       intros H. inversion H. apply (refl_equal X y). Qed.
+
+  Check eq'_ind.
+
+  Definition four : 2 + 2 = 1 + 3 :=
+    refl_equal nat 4.
+  Definition singleton : forall (X:Set) (x:X), []++[x] = x::[]  :=
+    fun (X:Set) (x:X) => refl_equal (list X) [x].
+
+End MyEquality.
+
+Module LeFirstTry.
+  Inductive le : nat -> nat -> Prop :=
+  | le_n : forall n, le n n
+  | le_S : forall n m, (le n m) -> (le n (S m)).
+
+  Check le_ind.
+End LeFirstTry.
+
+Inductive le (n:nat) : nat -> Prop :=
+  | le_n : le n n
+  | le_S : forall m, (le n m) -> (le n (S m)).
+
+Notation "m <= n" := (le m n).
+
+Check le_ind.
+
+Theorem test_le1 :
+  3 <= 3.
+Proof.
+
+  apply le_n.  Qed.
+
+Theorem test_le2 :
+  3 <= 6.
+Proof.
+
+  apply le_S. apply le_S. apply le_S. apply le_n.  Qed.
+
+Theorem test_le3 :
+  ~ (2 <= 1).
+Proof.
+
+  intros H. inversion H. inversion H1.  Qed.
+
+Definition lt (n m:nat) := le (S n) m.
+
+Notation "m < n" := (lt m n).
+
+Inductive square_of : nat -> nat -> Prop :=
+  sq : forall n:nat, square_of n (n * n).
+
+Inductive next_nat (n:nat) : nat -> Prop :=
+  | nn : next_nat n (S n).
+
+Inductive next_even (n:nat) : nat -> Prop :=
+  | ne_1 : ev (S n) -> next_even n (S n)
+  | ne_2 : ev (S (S n)) -> next_even n (S (S n)).
+
+Inductive total_relation (R : nat -> nat -> Prop) (n m : nat) : Prop :=
+| tr : R n m \/ R m n -> total_relation R n m.
+
