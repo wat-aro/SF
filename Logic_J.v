@@ -225,7 +225,7 @@ Proof.
   Case "b = true". inversion H.
   Case "b = false". simpl in H. split.
     SCase "left". reflexivity.
-    SCase "right".apply H. Qed.
+    SCase "right". apply H. Qed.
 
 Inductive False : Prop := .
 
@@ -555,3 +555,25 @@ End R.
 Inductive all (X : Type) (P : X -> Prop) : list X -> Prop :=
 | all_nil : all X P []
 | all_cons : forall x xs, P x -> all X P xs -> all X P (x :: xs).
+
+Theorem forallb_all : forall (X : Type) (test : X -> bool) (l : list X),
+    forallb test l = true <-> all X (fun x => test x = true) l.
+Proof.
+  intros X test l. split.
+  Case "->".
+    induction l as [| x' l'].
+    SCase "l = []". intros H. apply all_nil.
+    SCase "l = x' :: l'".
+      simpl.
+      intros EQ.
+      destruct (test x') as [] eqn : TH.
+      SSCase "test x' = true".
+        apply all_cons. apply TH. apply IHl'. apply EQ.
+      SSCase "test x = false". inversion EQ.
+  Case "<-".
+    induction l as [| x' l'].
+    SCase "l = []". reflexivity.
+    SCase "l = x' :: l'".
+      intros H.
+      inversion H.
+      simpl. rewrite H2. apply IHl'. apply H3. Qed.
