@@ -537,3 +537,21 @@ Inductive total_relation (R : nat -> nat -> Prop) (n m : nat) : Prop :=
 
 Inductive empty_relation (n m : nat) : Prop :=
 | er : n < m /\ n > m -> empty_relation n m.
+
+Module R.
+  Inductive R : nat -> nat -> nat -> Prop :=
+  | c1 : R 0 0 0
+  | c2 : forall m n o, R m n o -> R (S m) n (S o)
+  | c3 : forall m n o, R m n o -> R m (S n) (S o)
+  | c4 : forall m n o, R (S m) (S n) (S (S o)) -> R m n o
+  | c5 : forall m n o, R m n o -> R n m o.
+
+  Theorem R_1_1_2 :
+    R 1 1 2.
+  Proof.
+    apply c3. apply c2. apply c1. Qed.
+End R.
+
+Inductive all (X : Type) (P : X -> Prop) : list X -> Prop :=
+| all_nil : all X P []
+| all_cons : forall x xs, P x -> all X P xs -> all X P (x :: xs).
