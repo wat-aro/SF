@@ -601,11 +601,17 @@ Proof.
       intros. inversion H. subst l x l2.
       simpl. Admitted.
 
-Require Import List.
-
 Inductive appears_in {X:Type} (a:X) : list X -> Prop :=
   | ai_here : forall l, appears_in a (a::l)
   | ai_later : forall b l, appears_in a l -> appears_in a (b::l).
+
+Theorem app_nil_r : forall (X : Type) (l : list X),
+  l ++ [] = l.
+Proof.
+  intros X l. induction l as [| x l'].
+  Case "l = []". reflexivity.
+  Case "l = x :: l'".
+    simpl. rewrite IHl'. reflexivity. Qed.
 
 Lemma appears_in_app : forall {X:Type} (xs ys : list X) (x:X),
      appears_in x (xs ++ ys) -> appears_in x xs \/ appears_in x ys.
@@ -755,3 +761,25 @@ Proof.
       intros H. simpl in H. unfold not. intros LE. apply Sn_le_Sm__n_le_m in LE. apply (IHn' m').
         apply H.
         apply LE. Qed.
+
+Inductive nostutter : list nat -> Prop :=
+| ns_nil : nostutter nil
+| ns_one : forall n : nat, nostutter [n]
+| ns_cons : forall (x h : nat) (t : list nat), nostutter (h :: t) -> beq_nat x h = false -> nostutter (x :: h :: t).
+
+Example test_nostutter_1:      nostutter [3,1,4,1,5,6].
+Proof.
+  apply ns_cons. apply ns_cons. apply ns_cons. apply ns_cons. apply ns_cons.
+  apply ns_one.
+  reflexivity. reflexivity. reflexivity. reflexivity. reflexivity. Qed.
+
+Example test_nostutter_2:  nostutter [].
+Proof. apply ns_nil. Qed.
+
+Example test_nostutter_3:  nostutter [5].
+Proof. apply ns_one. Qed.
+
+Example test_nostutter_4:      not (nostutter [3,1,1,4]).
+Proof.
+  unfold not. intros contra. inversion contra.
+  inversion H1. inversion H8. Qed.
