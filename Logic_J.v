@@ -783,3 +783,37 @@ Example test_nostutter_4:      not (nostutter [3,1,1,4]).
 Proof.
   unfold not. intros contra. inversion contra.
   inversion H1. inversion H8. Qed.
+
+Lemma app_length : forall {X : Type} (l1 l2 : list X),
+    length (l1 ++ l2) = length l1 + length l2.
+Proof.
+  intros X l1 l2. induction l1 as [| x1 l1'].
+  Case "l1 = []".
+    reflexivity.
+  Case "l1 = x1 :: l1'".
+    simpl. rewrite -> IHl1'. reflexivity. Qed.
+
+Definition nat_ind2 :
+  forall (P : nat -> Prop),
+    P 0 ->
+    P 1 ->
+    (forall n : nat, P n -> P (S (S n))) ->
+      forall n : nat, P n :=
+        fun P => fun P0 => fun P1 => fun PSS =>
+          fix f (n: nat) := match n return P n with
+                            0 => P0
+                          | 1 => P1
+                          | S (S n') => PSS n' (f n')
+                          end.
+
+Lemma even_ev' : forall n, even n -> ev n.
+Proof.
+  intros.
+  induction n as [ | | n'] using nat_ind2.
+  Case "even 0".
+    apply ev_0.
+  Case "even 1".
+    inversion H.
+  Case "even (S (S n'))".
+    apply ev_SS.
+    apply IHn'. unfold even. unfold even in H. simpl in H. apply H. Qed.
