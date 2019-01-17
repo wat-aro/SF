@@ -577,3 +577,181 @@ Proof.
       intros H.
       inversion H.
       simpl. rewrite H2. apply IHl'. apply H3. Qed.
+
+Inductive in_order_merge {X : Type} : list X -> list X -> list X -> Prop :=
+| merge_nil : in_order_merge [] [] []
+| merge_cons_left : forall (x : X) (l1 l2 l : list X),
+    in_order_merge l1 l2 l -> in_order_merge (x :: l1) l2 (x :: l)
+| merge_cons_right : forall (x : X) (l1 l2 l : list X),
+    in_order_merge l1 l2 l -> in_order_merge l1 (x :: l2) (x :: l).
+
+Theorem filter_change : forall {X : Type} (test : X -> bool) (l l1 l2 : list X),
+    in_order_merge l1 l2 l ->
+    all X (fun x => test x = true) l1 ->
+    all X (fun x => test x = false) l2 ->
+    filter test l = l1.
+Proof.
+  intros X test.
+  induction l as [| x l'].
+  Case "l = []".
+    intros. inversion H. reflexivity.
+  Case "l = x' :: l'".
+    induction l1 as [| x1' l1'].
+    SCase "l1 = []".
+      intros. inversion H. subst l x l2.
+      simpl. Admitted.
+
+Require Import List.
+
+Inductive appears_in {X:Type} (a:X) : list X -> Prop :=
+  | ai_here : forall l, appears_in a (a::l)
+  | ai_later : forall b l, appears_in a l -> appears_in a (b::l).
+
+Lemma appears_in_app : forall {X:Type} (xs ys : list X) (x:X),
+     appears_in x (xs ++ ys) -> appears_in x xs \/ appears_in x ys.
+Proof.
+  intros X.
+  induction xs as [| x' xs'].
+  Case "xs = []".
+    intros ys x H. right.
+    simpl in H. apply H.
+  Case "xs = x' :: xs'".
+    intros ys x H.
+    destruct ys as [| y' ys'].
+    SCase "ys = []".
+      rewrite app_nil_r in H. left. apply H.
+    SCase "ys = y' :: ys'".
+      simpl in H. Admitted.
+
+Theorem O_le_n : forall n,
+  0 <= n.
+Proof.
+  intros n.
+  induction n as [| n'].
+  Case "n = 0". apply le_n.
+  Case "n = S n'". apply le_S. apply IHn'. Qed.
+
+Theorem n_le_m__Sn_le_Sm : forall n m,
+  n <= m -> S n <= S m.
+Proof.
+  intros n m H.
+  induction H.
+  Case "le_n". apply le_n.
+  Case "le_S".
+    apply le_S. apply IHle. Qed.
+
+Theorem Sn_le_Sm__n_le_m : forall n m,
+  S n <= S m -> n <= m.
+Proof.
+  intros n m.  generalize dependent n.  induction m.
+  Case "m = 0".
+    intros n H. inversion H.
+    SCase "le_n". apply le_n.
+    SCase "le_S". inversion H1.
+  Case "m = S m'".
+    intros n H. inversion H.
+    SCase "le_n". apply le_n.
+    SCase "le_S".
+      apply le_S. apply IHm. apply H1. Qed.
+
+Theorem le_plus_l : forall a b,
+  a <= a + b.
+Proof.
+  intros a b. generalize dependent a.
+  induction b as [| b'].
+  Case "b = 0".
+    intros a. rewrite -> plus_0. apply le_n.
+  Case "b = S b'".
+    intros a. rewrite <- plus_n_Sm. apply le_S. apply IHb'. Qed.
+
+Lemma le_dec_R :
+  forall {n m}, n <= S m -> n <= m \/ n = S m.
+Proof.
+  intros n m H.
+  inversion H.
+  Case "le_n".
+    right. reflexivity.
+  Case "le_S".
+    left. apply H1. Qed.
+
+Theorem plus_lt : forall n1 n2 m,
+  n1 + n2 < m ->
+  n1 < m /\ n2 < m.
+Proof.
+  intros n1 n2 m. generalize dependent n2. generalize dependent n1.
+  induction m as [| m'].
+  Case "m = 0".
+    intros n1 n2 H. inversion H.
+  Case "m = S m'".
+    intros n1 n2 H.
+    apply le_dec_R in H.
+    destruct H as [LE | EQ].
+    SCase "LE".
+      apply IHm' in LE.
+      inversion LE as [n1H n2H].
+      split.
+        apply le_S. apply n1H.
+        apply le_S. apply n2H.
+    SCase "EQ".
+      rewrite <- EQ.
+      split.
+        apply n_le_m__Sn_le_Sm. apply le_plus_l.
+        apply n_le_m__Sn_le_Sm. rewrite plus_comm. apply le_plus_l. Qed.
+
+Theorem lt_S : forall n m,
+  n < m ->
+  n < S m.
+Proof.
+  intros n m H.
+  destruct H.
+  Case "le_n".
+    apply le_S. apply le_n.
+  Case "le_S".
+    apply le_S. apply le_S. apply H. Qed.
+
+Theorem ble_nat_true : forall n m,
+  ble_nat n m = true -> n <= m.
+Proof.
+  intros n. induction n as [| n'].
+  Case "n = 0".
+    intros m H. induction m as [| m'].
+    SCase "m = 0". apply le_n.
+    SCase "m = S m'".
+      apply le_S. apply IHm'. reflexivity.
+  Case "n = S n'".
+    intros m H. induction m as [| m'].
+    SCase "m = 0". inversion H.
+    SCase "m = S m'".
+      apply n_le_m__Sn_le_Sm. apply IHn'. apply H. Qed.
+
+Theorem ble_nat_n_Sn_false : forall n m,
+  ble_nat n (S m) = false ->
+  ble_nat n m = false.
+Proof.
+  intros n. induction n as [| n'].
+  Case "n = 0".
+    intros m H. inversion H.
+  Case "n = S n'".
+    intros m H. induction m as [| m'].
+    SCase "m = 0".
+      simpl. reflexivity.
+    SCase "m = S m'".
+      simpl. apply IHn'. simpl in H. apply H. Qed.
+
+Theorem ble_nat_false : forall n m,
+  ble_nat n m = false -> ~(n <= m).
+Proof.
+  intros n. induction n as [| n'].
+  Case "n = 0".
+    intros m H. induction m as [| m'].
+    SCase "m = 0". inversion H.
+    SCase "m = S m'". inversion H.
+  Case "n = S n'".
+    intro m.
+    induction m as [| m'].
+    SCase "m = 0".
+      intro H. unfold not. intros contra. inversion contra.
+    SCase "m = S m'".
+      intros H. simpl in H. unfold not. intros LE. apply Sn_le_Sm__n_le_m in LE. apply (IHn' m').
+        apply H.
+        apply LE. Qed.
